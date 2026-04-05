@@ -384,6 +384,60 @@
           "facilities": ["shelter", "bench"]
         }
       ]
+    },
+    {
+      "id": "LRT-002",
+      "name": "NAC Light Rail - Financial Line",
+      "nameAr": "القطار الخفيف للعاصمة - الخط المالي",
+      "type": "lrt",
+      "color": "#0D47A1",
+      "frequency": "Every 10 minutes",
+      "frequencyAr": "كل 10 دقائق",
+      "operatingHours": "06:00-23:00",
+      "fareEGP": 15,
+      "stations": [
+        { "id": "LRT2-S01", "name": "Financial District Terminal", "nameAr": "محطة الحي المالي", "lat": 30.016, "lng": 31.757, "order": 1, "nextArrivals": ["2026-04-05T08:15:00Z","2026-04-05T08:25:00Z","2026-04-05T08:35:00Z"], "facilities": ["ticket-machine","restroom","wheelchair-ramp","parking"] },
+        { "id": "LRT2-S02", "name": "Tech Park", "nameAr": "مجمع التكنولوجيا", "lat": 30.015, "lng": 31.754, "order": 2, "nextArrivals": ["2026-04-05T08:17:00Z","2026-04-05T08:27:00Z","2026-04-05T08:37:00Z"], "facilities": ["ticket-machine","wheelchair-ramp"] },
+        { "id": "LRT2-S03", "name": "Central Boulevard", "nameAr": "البوليفارد المركزي", "lat": 30.0185, "lng": 31.759, "order": 3, "nextArrivals": ["2026-04-05T08:19:00Z","2026-04-05T08:29:00Z","2026-04-05T08:39:00Z"], "facilities": ["ticket-machine","elevator","restroom"] },
+        { "id": "LRT2-S04", "name": "Justice Square", "nameAr": "ميدان العدالة", "lat": 30.0188, "lng": 31.762, "order": 4, "nextArrivals": ["2026-04-05T08:21:00Z","2026-04-05T08:31:00Z","2026-04-05T08:41:00Z"], "facilities": ["ticket-machine","wheelchair-ramp","bench"] },
+        { "id": "LRT2-S05", "name": "Parliament", "nameAr": "البرلمان", "lat": 30.023, "lng": 31.762, "order": 5, "nextArrivals": ["2026-04-05T08:23:00Z","2026-04-05T08:33:00Z","2026-04-05T08:43:00Z"], "facilities": ["ticket-machine","restroom","elevator","wheelchair-ramp"] },
+        { "id": "LRT2-S06", "name": "Diplomatic Quarter", "nameAr": "الحي الدبلوماسي", "lat": 30.029, "lng": 31.764, "order": 6, "nextArrivals": ["2026-04-05T08:26:00Z","2026-04-05T08:36:00Z","2026-04-05T08:46:00Z"], "facilities": ["ticket-machine","parking","restroom"] }
+      ]
+    },
+    {
+      "id": "MONO-002",
+      "name": "NAC Monorail - East-West Line",
+      "nameAr": "مونوريل العاصمة - الخط الشرقي الغربي",
+      "type": "monorail",
+      "color": "#E65100",
+      "frequency": "Every 6 minutes",
+      "frequencyAr": "كل 6 دقائق",
+      "operatingHours": "05:00-01:00",
+      "fareEGP": 18,
+      "stations": [
+        { "id": "MNR2-S01", "name": "Capital Gardens Terminal", "nameAr": "محطة حدائق العاصمة", "lat": 30.024, "lng": 31.77, "order": 1, "nextArrivals": ["2026-04-05T08:12:00Z","2026-04-05T08:18:00Z","2026-04-05T08:24:00Z"], "facilities": ["ticket-machine","restroom","parking","wheelchair-ramp"] },
+        { "id": "MNR2-S02", "name": "Opera Square", "nameAr": "ميدان الأوبرا", "lat": 30.019, "lng": 31.765, "order": 2, "nextArrivals": ["2026-04-05T08:14:00Z","2026-04-05T08:20:00Z","2026-04-05T08:26:00Z"], "facilities": ["ticket-machine","elevator"] },
+        { "id": "MNR2-S03", "name": "Government District", "nameAr": "الحي الحكومي", "lat": 30.021, "lng": 31.758, "order": 3, "nextArrivals": ["2026-04-05T08:16:00Z","2026-04-05T08:22:00Z","2026-04-05T08:28:00Z"], "facilities": ["ticket-machine","restroom","wheelchair-ramp","elevator"] },
+        { "id": "MNR2-S04", "name": "Mosque Square", "nameAr": "ميدان المسجد", "lat": 30.0205, "lng": 31.752, "order": 4, "nextArrivals": ["2026-04-05T08:18:00Z","2026-04-05T08:24:00Z","2026-04-05T08:30:00Z"], "facilities": ["ticket-machine","wheelchair-ramp"] },
+        { "id": "MNR2-S05", "name": "River Walk", "nameAr": "ممشى النهر", "lat": 30.0195, "lng": 31.747, "order": 5, "nextArrivals": ["2026-04-05T08:20:00Z","2026-04-05T08:26:00Z","2026-04-05T08:32:00Z"], "facilities": ["ticket-machine","restroom","parking"] }
+      ]
+    },
+    {
+      "id": "BUS-004",
+      "name": "Express Bus - Airport Shuttle",
+      "nameAr": "الحافلة السريعة - مكوك المطار",
+      "type": "bus",
+      "color": "#6A1B9A",
+      "frequency": "Every 15 minutes",
+      "frequencyAr": "كل 15 دقيقة",
+      "operatingHours": "04:00-02:00",
+      "fareEGP": 25,
+      "stations": [
+        { "id": "BUS4-S01", "name": "Government District Hub", "nameAr": "مركز الحي الحكومي", "lat": 30.0194, "lng": 31.76, "order": 1, "nextArrivals": ["2026-04-05T08:20:00Z","2026-04-05T08:35:00Z","2026-04-05T08:50:00Z"], "facilities": ["shelter","bench","ticket-machine"] },
+        { "id": "BUS4-S02", "name": "Capital Mall", "nameAr": "مول العاصمة", "lat": 30.0225, "lng": 31.751, "order": 2, "nextArrivals": ["2026-04-05T08:25:00Z","2026-04-05T08:40:00Z","2026-04-05T08:55:00Z"], "facilities": ["shelter","bench"] },
+        { "id": "BUS4-S03", "name": "Education City Gate", "nameAr": "بوابة مدينة التعليم", "lat": 30.028, "lng": 31.766, "order": 3, "nextArrivals": ["2026-04-05T08:30:00Z","2026-04-05T08:45:00Z","2026-04-05T09:00:00Z"], "facilities": ["shelter"] },
+        { "id": "BUS4-S04", "name": "NAC International Airport", "nameAr": "مطار العاصمة الدولي", "lat": 30.035, "lng": 31.78, "order": 4, "nextArrivals": ["2026-04-05T08:40:00Z","2026-04-05T08:55:00Z","2026-04-05T09:10:00Z"], "facilities": ["ticket-machine","restroom","wheelchair-ramp","parking","elevator"] }
+      ]
     }
   ]
 }

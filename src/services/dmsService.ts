@@ -3,17 +3,34 @@ import { DMSMessage } from '../types';
 
 let dmsData: DMSMessage[] | null = null;
 
+function normalizeDms(raw: any): DMSMessage {
+  const priorityMap: Record<string, number> = { high: 1, medium: 2, low: 3 };
+  return {
+    id: raw.id,
+    signId: raw.signId ?? raw.id,
+    location: raw.location ?? { latitude: raw.lat, longitude: raw.lng },
+    message: raw.message ?? raw.messageEn ?? '',
+    messageAr: raw.messageAr ?? '',
+    status: raw.isActive === false ? 'inactive' : raw.status ?? 'active',
+    priority: typeof raw.priority === 'number' ? raw.priority : (priorityMap[raw.priority] ?? 2),
+    startTime: raw.startTime,
+    endTime: raw.endTime,
+    updatedAt: raw.updatedAt ?? new Date().toISOString(),
+  };
+}
+
 async function getData() {
   if (!dmsData) {
     const raw = require('../mocks/dmsMessages.json');
-    dmsData = Array.isArray(raw) ? raw : raw.dmsMessages ?? [];
+    const arr = Array.isArray(raw) ? raw : raw.dmsMessages ?? [];
+    dmsData = arr.map(normalizeDms);
   }
   return dmsData!;
 }
 
 export async function getActiveDmsMessages(): Promise<DMSMessage[]> {
   const data = await getData();
-  return mockFetch(data);
+  return mockFetch(data.filter((d) => d.status === 'active'));
 }
 
 export async function getDmsById(id: string): Promise<DMSMessage | undefined> {
@@ -23,5 +40,5 @@ export async function getDmsById(id: string): Promise<DMSMessage | undefined> {
 
 export async function getDmsByType(type: string): Promise<DMSMessage[]> {
   const data = await getData();
-  return mockFetch(type === 'all' ? data : data.filter((d) => d.messageType === type));
+  return mockFetch(type === 'all' ? data : data.filter((d) => (d as any).messageType === type));
 }
