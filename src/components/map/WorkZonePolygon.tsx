@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Polygon } from 'react-native-maps';
+import { Polygon } from '../../utils/MapView';
 import type { LatLng } from '../../types';
 
 // ── Constants ─────────────────────────────────────────────────

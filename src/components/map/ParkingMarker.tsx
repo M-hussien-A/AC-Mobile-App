@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
-import { Marker, Callout } from 'react-native-maps';
+import { Marker, Callout } from '../../utils/MapView';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useAppTheme, parking as parkingColors } from '../../theme';

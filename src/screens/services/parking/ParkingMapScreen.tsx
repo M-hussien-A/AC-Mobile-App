@@ -11,7 +11,7 @@ import {
   Text,
   Dimensions,
 } from 'react-native';
-import MapView from 'react-native-maps';
+import MapView from '../../../utils/MapView';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';

@@ -29,7 +29,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
+import { impactAsync, notificationAsync } from '../../utils/haptics';
 import { useThemeColors } from '../../theme';
 import { AlertsStackParamList } from '../../navigation/types';
 import { SOSButton } from '../../components/alerts';
@@ -118,13 +118,13 @@ export default function EmergencySOSScreen() {
 
   // ── Handlers ───────────────────────────────────────────────
   const handleSOSActivated = useCallback(() => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    notificationAsync('Warning');
     setPhase('activated');
   }, []);
 
   const handleSendSOS = useCallback(async () => {
     if (!selectedType) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      notificationAsync('Error');
       return;
     }
 
@@ -132,7 +132,7 @@ export default function EmergencySOSScreen() {
     try {
       const result = await sendSOS(selectedType, gpsLat, gpsLng, peopleCount);
       setReferenceNumber(result.referenceNumber);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      notificationAsync('Success');
       setPhase('sent');
     } catch {
       RNAlert.alert(
@@ -168,12 +168,12 @@ export default function EmergencySOSScreen() {
 
   const incrementPeople = useCallback(() => {
     setPeopleCount((c) => Math.min(c + 1, 50));
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    impactAsync('Light');
   }, []);
 
   const decrementPeople = useCallback(() => {
     setPeopleCount((c) => Math.max(c - 1, 1));
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    impactAsync('Light');
   }, []);
 
   const formatElapsed = (seconds: number): string => {
@@ -329,7 +329,7 @@ export default function EmergencySOSScreen() {
                   key={option.type}
                   onPress={() => {
                     setSelectedType(option.type);
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    impactAsync('Medium');
                   }}
                   style={[
                     styles.typeButton,

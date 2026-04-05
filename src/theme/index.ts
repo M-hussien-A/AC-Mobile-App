@@ -76,6 +76,11 @@ export function useAppTheme(): AppTheme {
   return React.useContext(ThemeContext);
 }
 
+export function ThemeProvider({ isDark, children }: { isDark: boolean; children: React.ReactNode }) {
+  const theme = React.useMemo(() => createAppTheme(isDark), [isDark]);
+  return React.createElement(ThemeContext.Provider, { value: theme }, children);
+}
+
 // ── Flat color helper used by screens ────────────────────────
 export function useThemeColors() {
   const theme = useAppTheme();

@@ -19,7 +19,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import MapView, { Polyline, Marker } from 'react-native-maps';
+import MapView, { Polyline, Marker } from '../../utils/MapView';
 import { useThemeColors } from '../../theme';
 import { JourneyStackParamList } from '../../navigation/types';
 import { useJourneyStore } from '../../stores/journeyStore';

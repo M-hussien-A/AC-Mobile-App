@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Polyline } from 'react-native-maps';
+import { Polyline } from '../../utils/MapView';
 import { useAppTheme } from '../../theme';
 
 // ── Props ─────────────────────────────────────────────────────

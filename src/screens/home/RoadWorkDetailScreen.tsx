@@ -3,7 +3,7 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import MapView, { Polygon, Marker } from 'react-native-maps';
+import MapView, { Polygon, Marker } from '../../utils/MapView';
 import { useThemeColors } from '../../theme';
 import { Card, Button } from '../../components/common';
 import { AccessibleText } from '../../components/common';

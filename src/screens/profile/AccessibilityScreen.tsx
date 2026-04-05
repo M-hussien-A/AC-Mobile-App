@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, Switch } from 'react-native';
+import { View, ScrollView, StyleSheet, Switch, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useThemeColors } from '../../theme';
 import { Card } from '../../components/common';
 import { AccessibleText } from '../../components/common';
-import Slider from '@react-native-community/slider';
 
 export default function AccessibilityScreen() {
   const { t } = useTranslation();
@@ -73,8 +72,6 @@ export default function AccessibilityScreen() {
     </ScrollView>
   );
 }
-
-import { Pressable } from 'react-native';
 
 const styles = StyleSheet.create({
   container: { flex: 1 },

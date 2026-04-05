@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker } from '../../utils/MapView';
 import { useThemeColors } from '../../theme';
 import { Card, Button } from '../../components/common';
 import { AccessibleText } from '../../components/common';

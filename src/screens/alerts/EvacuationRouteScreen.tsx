@@ -22,7 +22,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import MapView, { Marker, Polyline, Region } from 'react-native-maps';
+import MapView, { Marker, Polyline, Region } from '../../utils/MapView';
 import { useThemeColors } from '../../theme';
 import { AlertsStackParamList } from '../../navigation/types';
 import { getEvacuationPlan } from '../../services/reportService';
