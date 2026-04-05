@@ -17,7 +17,7 @@ function normalizeIncident(raw: any): Incident {
     startTime: raw.startTime,
     endTime: raw.endTime,
     estimatedClearTime: raw.estimatedClearTime,
-    verified: raw.verified ?? raw.status === 'confirmed' || raw.status === 'responding',
+    verified: raw.verified ?? (raw.status === 'confirmed' || raw.status === 'responding'),
     source: raw.source ?? 'TMC',
     updatedAt: raw.updatedAt ?? raw.lastUpdated ?? new Date().toISOString(),
   };
