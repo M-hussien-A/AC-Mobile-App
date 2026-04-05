@@ -5,7 +5,8 @@ let alertData: Alert[] | null = null;
 
 async function getData() {
   if (!alertData) {
-    alertData = require('../mocks/alerts.json');
+    const raw = require('../mocks/alerts.json');
+    alertData = Array.isArray(raw) ? raw : raw.alerts ?? [];
   }
   return alertData!;
 }

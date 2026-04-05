@@ -5,7 +5,8 @@ let dmsData: DMSMessage[] | null = null;
 
 async function getData() {
   if (!dmsData) {
-    dmsData = require('../mocks/dmsMessages.json');
+    const raw = require('../mocks/dmsMessages.json');
+    dmsData = Array.isArray(raw) ? raw : raw.dmsMessages ?? [];
   }
   return dmsData!;
 }

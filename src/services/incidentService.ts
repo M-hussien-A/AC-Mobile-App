@@ -5,7 +5,8 @@ let incidentData: Incident[] | null = null;
 
 async function getData() {
   if (!incidentData) {
-    incidentData = require('../mocks/incidents.json');
+    const raw = require('../mocks/incidents.json');
+    incidentData = Array.isArray(raw) ? raw : raw.incidents ?? [];
   }
   return incidentData!;
 }
