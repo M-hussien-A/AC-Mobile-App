@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "ACUD Traveler",
+    "slug": "acud-traveler",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1F4E79"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.acud.traveler",
+      "config": {
+        "googleMapsApiKey": "GOOGLE_MAPS_API_KEY"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1F4E79"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.acud.traveler",
+      "config": {
+        "googleMaps": {
+          "apiKey": "GOOGLE_MAPS_API_KEY"
+        }
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-localization",
+      "expo-notifications",
+      "expo-location",
+      "expo-image-picker"
+    ],
+    "scheme": "acud-traveler",
+    "extra": {
+      "mapCenter": {
+        "latitude": 30.0194,
+        "longitude": 31.76
+      },
+      "defaultZoom": 14
+    }
+  }
+}

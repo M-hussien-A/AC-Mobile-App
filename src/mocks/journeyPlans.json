@@ -1,0 +1,77 @@
+{
+  "plans": [
+    {
+      "id": "plan-001",
+      "routes": [
+        {
+          "id": "route-001",
+          "summary": "Via Mohammed bin Zayed Road",
+          "distanceKm": 8.5,
+          "durationMin": 18,
+          "delayMin": 3,
+          "mode": "drive",
+          "co2Grams": 1200,
+          "polyline": [[30.0194, 31.76], [30.02, 31.758], [30.022, 31.755], [30.024, 31.752], [30.026, 31.75], [30.028, 31.748], [30.03, 31.746]],
+          "steps": [
+            { "instruction": "Head north on Government District Road", "instructionAr": "اتجه شمالاً على طريق الحي الحكومي", "distanceKm": 1.2, "durationMin": 3, "mode": "drive" },
+            { "instruction": "Turn right onto Mohammed bin Zayed Road", "instructionAr": "انعطف يميناً إلى شارع محمد بن زايد", "distanceKm": 4.5, "durationMin": 8, "mode": "drive" },
+            { "instruction": "Continue straight past Al Amal Intersection", "instructionAr": "استمر مباشرة بعد تقاطع الأمل", "distanceKm": 2.8, "durationMin": 7, "mode": "drive" }
+          ],
+          "warnings": ["Queue warning at Al Amal Intersection"]
+        },
+        {
+          "id": "route-002",
+          "summary": "Via South 90th Street",
+          "distanceKm": 10.2,
+          "durationMin": 22,
+          "delayMin": 1,
+          "mode": "drive",
+          "co2Grams": 1450,
+          "polyline": [[30.0194, 31.76], [30.018, 31.762], [30.016, 31.765], [30.015, 31.768], [30.017, 31.77], [30.02, 31.772], [30.025, 31.77]],
+          "steps": [
+            { "instruction": "Head south on Government District Road", "instructionAr": "اتجه جنوباً على طريق الحي الحكومي", "distanceKm": 1.5, "durationMin": 4, "mode": "drive" },
+            { "instruction": "Turn left onto South 90th Street", "instructionAr": "انعطف يساراً إلى شارع التسعين الجنوبي", "distanceKm": 5.2, "durationMin": 10, "mode": "drive" },
+            { "instruction": "Continue to destination", "instructionAr": "استمر حتى الوجهة", "distanceKm": 3.5, "durationMin": 8, "mode": "drive" }
+          ],
+          "warnings": []
+        },
+        {
+          "id": "route-003",
+          "summary": "Multimodal: Walk + LRT + Walk",
+          "distanceKm": 9.0,
+          "durationMin": 35,
+          "delayMin": 0,
+          "mode": "multimodal",
+          "co2Grams": 150,
+          "polyline": [[30.0194, 31.76], [30.02, 31.759], [30.022, 31.757], [30.025, 31.755], [30.028, 31.753]],
+          "steps": [
+            { "instruction": "Walk to Government District LRT Station", "instructionAr": "امشِ إلى محطة قطار الحي الحكومي", "distanceKm": 0.4, "durationMin": 5, "mode": "walk" },
+            { "instruction": "Take LRT Line 1 to Central Station", "instructionAr": "استقل القطار الخفيف خط 1 إلى المحطة المركزية", "distanceKm": 7.2, "durationMin": 20, "mode": "lrt", "transitInfo": { "routeNumber": "LRT-1", "boardStation": "Government District", "alightStation": "Central Station" } },
+            { "instruction": "Walk to destination", "instructionAr": "امشِ إلى الوجهة", "distanceKm": 0.6, "durationMin": 8, "mode": "walk" }
+          ],
+          "warnings": []
+        }
+      ]
+    }
+  ],
+  "savedRoutes": [
+    {
+      "id": "saved-001",
+      "name": "Home to Office",
+      "nameAr": "من المنزل إلى المكتب",
+      "from": { "name": "Home - R5 District", "lat": 30.015, "lng": 31.755 },
+      "to": { "name": "Government Quarter", "lat": 30.025, "lng": 31.765 },
+      "lastUsed": "2026-04-04T08:00:00Z",
+      "estimatedTimeMin": 15
+    },
+    {
+      "id": "saved-002",
+      "name": "Office to Mall",
+      "nameAr": "من المكتب إلى المول",
+      "from": { "name": "Government Quarter", "lat": 30.025, "lng": 31.765 },
+      "to": { "name": "NAC Commercial Center", "lat": 30.018, "lng": 31.775 },
+      "lastUsed": "2026-04-02T17:30:00Z",
+      "estimatedTimeMin": 20
+    }
+  ]
+}

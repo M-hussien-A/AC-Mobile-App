@@ -1,0 +1,150 @@
+{
+  "user": {
+    "id": "USR-001",
+    "firstName": "Ahmed",
+    "firstNameAr": "أحمد",
+    "lastName": "Hassan",
+    "lastNameAr": "حسن",
+    "email": "ahmed.hassan@email.com",
+    "phone": "+201012345678",
+    "language": "ar",
+    "avatar": "/avatars/ahmed-hassan.jpg",
+    "nationalId": "29001012345678",
+    "driverLicenseNumber": "DL-2024-987654",
+    "driverLicenseExpiry": "2028-06-15",
+    "registeredAt": "2025-09-01T10:00:00Z",
+    "lastLogin": "2026-04-05T07:45:00Z",
+    "vehicles": [
+      {
+        "id": "VEH-001",
+        "plate": "ن ر و 4521",
+        "plateEn": "NRW 4521",
+        "make": "Toyota",
+        "model": "Camry",
+        "year": 2025,
+        "color": "White",
+        "colorAr": "أبيض",
+        "type": "sedan",
+        "fuelType": "gasoline",
+        "registrationExpiry": "2027-03-15",
+        "isPrimary": true
+      },
+      {
+        "id": "VEH-002",
+        "plate": "م ص ر 8832",
+        "plateEn": "MSR 8832",
+        "make": "BYD",
+        "model": "Seal",
+        "year": 2026,
+        "color": "Blue",
+        "colorAr": "أزرق",
+        "type": "sedan",
+        "fuelType": "electric",
+        "registrationExpiry": "2027-09-20",
+        "isPrimary": false
+      }
+    ],
+    "savedLocations": [
+      {
+        "id": "LOC-001",
+        "name": "Home",
+        "nameAr": "المنزل",
+        "address": "Residential Zone 1, Block 5, Building 12",
+        "addressAr": "المنطقة السكنية 1، بلوك 5، مبنى 12",
+        "lat": 30.0128,
+        "lng": 31.7585,
+        "icon": "home"
+      },
+      {
+        "id": "LOC-002",
+        "name": "Work - Ministry of Communications",
+        "nameAr": "العمل - وزارة الاتصالات",
+        "address": "Ministry Row, Government Quarter",
+        "addressAr": "صف الوزارات، الحي الحكومي",
+        "lat": 30.0220,
+        "lng": 31.7630,
+        "icon": "work"
+      },
+      {
+        "id": "LOC-003",
+        "name": "Capital Mall",
+        "nameAr": "مول العاصمة",
+        "address": "Mohammed bin Zayed Street, Capital Mall",
+        "addressAr": "شارع محمد بن زايد، مول العاصمة",
+        "lat": 30.0225,
+        "lng": 31.7510,
+        "icon": "shopping"
+      }
+    ],
+    "wallet": {
+      "balanceEGP": 2500,
+      "currency": "EGP",
+      "lastTopUp": "2026-04-01T12:00:00Z",
+      "autoTopUp": true,
+      "autoTopUpThresholdEGP": 500,
+      "autoTopUpAmountEGP": 1000,
+      "linkedCard": {
+        "type": "visa",
+        "lastFour": "4289",
+        "expiryMonth": 8,
+        "expiryYear": 2028
+      },
+      "recentTransactions": [
+        {
+          "id": "TXN-001",
+          "type": "parking",
+          "description": "Government Quarter Parking - 3 hours",
+          "descriptionAr": "موقف الحي الحكومي - 3 ساعات",
+          "amountEGP": -45,
+          "date": "2026-04-04T17:30:00Z"
+        },
+        {
+          "id": "TXN-002",
+          "type": "transit",
+          "description": "LRT - River Walk to Government Quarter",
+          "descriptionAr": "القطار الخفيف - ممشى النهر إلى الحي الحكومي",
+          "amountEGP": -12,
+          "date": "2026-04-04T07:50:00Z"
+        },
+        {
+          "id": "TXN-003",
+          "type": "violation",
+          "description": "Red Light Violation Fine - VIO-002",
+          "descriptionAr": "غرامة مخالفة إشارة حمراء - VIO-002",
+          "amountEGP": -3000,
+          "date": "2026-03-25T11:00:00Z"
+        },
+        {
+          "id": "TXN-004",
+          "type": "topup",
+          "description": "Wallet Top-Up",
+          "descriptionAr": "شحن المحفظة",
+          "amountEGP": 1000,
+          "date": "2026-04-01T12:00:00Z"
+        }
+      ]
+    },
+    "notifications": {
+      "pushEnabled": true,
+      "emailEnabled": true,
+      "smsEnabled": false,
+      "preferences": {
+        "trafficAlerts": true,
+        "transitUpdates": true,
+        "parkingAvailability": true,
+        "violationNotices": true,
+        "weatherAlerts": true,
+        "enforcementAlerts": true,
+        "emergencyAlerts": true,
+        "promotions": false,
+        "weeklyReport": true
+      },
+      "quietHours": {
+        "enabled": true,
+        "start": "23:00",
+        "end": "06:00",
+        "exceptEmergency": true
+      }
+    }
+  }
+}
