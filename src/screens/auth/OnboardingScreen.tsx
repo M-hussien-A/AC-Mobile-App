@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Dimensions,
+  useWindowDimensions,
   TouchableOpacity,
   NativeSyntheticEvent,
   NativeScrollEvent,
@@ -19,8 +19,6 @@ import { AuthStackParamList } from '../../navigation/types';
 import { brand } from '../../theme';
 
 type Nav = NativeStackNavigationProp<AuthStackParamList, 'Onboarding'>;
-
-const { width } = Dimensions.get('window');
 
 interface Slide {
   icon: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
@@ -47,6 +45,9 @@ const slides: Slide[] = [
 ];
 
 export default function OnboardingScreen() {
+  const { width: windowWidth } = useWindowDimensions();
+  const width = Math.min(windowWidth, 480);
+
   const navigation = useNavigation<Nav>();
   const { t } = useTranslation();
   const completeOnboarding = useAuthStore((s) => s.completeOnboarding);
@@ -59,7 +60,7 @@ export default function OnboardingScreen() {
       const index = Math.round(event.nativeEvent.contentOffset.x / width);
       setActiveIndex(index);
     },
-    [],
+    [width],
   );
 
   const goToNext = useCallback(() => {
@@ -97,7 +98,7 @@ export default function OnboardingScreen() {
         bounces={false}
       >
         {slides.map((slide, index) => (
-          <View key={index} style={styles.slide}>
+          <View key={index} style={[styles.slide, { width }]}>
             <View style={styles.iconContainer}>
               <MaterialCommunityIcons
                 name={slide.icon}
@@ -154,7 +155,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   slide: {
-    width,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

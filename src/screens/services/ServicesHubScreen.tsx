@@ -9,7 +9,7 @@ import {
   FlatList,
   StyleSheet,
   Platform,
-  Dimensions,
+  useWindowDimensions,
   ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -34,10 +34,11 @@ interface ServiceTile {
 
 const TILE_GAP = 12;
 const SCREEN_PADDING = 16;
-const TILE_WIDTH =
-  (Dimensions.get('window').width - SCREEN_PADDING * 2 - TILE_GAP) / 2;
 
 export default function ServicesHubScreen() {
+  const { width: windowWidth } = useWindowDimensions();
+  const screenWidth = Math.min(windowWidth, 480);
+  const TILE_WIDTH = (screenWidth - SCREEN_PADDING * 2 - TILE_GAP) / 2;
   const navigation = useNavigation<Nav>();
   const { t } = useTranslation();
   const colors = useThemeColors();

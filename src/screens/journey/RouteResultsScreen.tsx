@@ -13,7 +13,7 @@ import {
   Animated,
   ActivityIndicator,
   Alert,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -34,9 +34,6 @@ import { Route } from '../../types';
 
 type Nav = NativeStackNavigationProp<JourneyStackParamList, 'RouteResults'>;
 type ScreenRoute = RouteProp<JourneyStackParamList, 'RouteResults'>;
-
-const SCREEN_HEIGHT = Dimensions.get('window').height;
-const MAP_HEIGHT = SCREEN_HEIGHT * 0.42;
 
 // ── Mock polyline coordinates for demo ──────────────────────────
 const MOCK_ROUTE_COORDS: [number, number][][] = [
@@ -60,6 +57,9 @@ const MOCK_ROUTE_COORDS: [number, number][][] = [
 const ROUTE_COLORS = ['#4A90D9', '#E67E22', '#8E44AD'];
 
 export default function RouteResultsScreen() {
+  const { height: windowHeight } = useWindowDimensions();
+  const MAP_HEIGHT = windowHeight * 0.42;
+
   const navigation = useNavigation<Nav>();
   const route = useRoute<ScreenRoute>();
   const { t } = useTranslation();
@@ -143,7 +143,7 @@ export default function RouteResultsScreen() {
   if (isLoading) {
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <View style={[styles.mapPlaceholder, { backgroundColor: colors.surfaceVariant }]}>
+        <View style={[styles.mapPlaceholder, { height: MAP_HEIGHT, backgroundColor: colors.surfaceVariant }]}>
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
         <View style={styles.cardsContainer}>
@@ -173,7 +173,7 @@ export default function RouteResultsScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Map Area */}
-      <View style={styles.mapContainer}>
+      <View style={[styles.mapContainer, { height: MAP_HEIGHT }]}>
         <TrafficMapView ref={mapRef} style={styles.map}>
           {/* Origin marker */}
           {currentPlan?.origin && (
@@ -321,14 +321,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  mapContainer: {
-    height: MAP_HEIGHT,
-  },
+  mapContainer: {},
   map: {
     flex: 1,
   },
   mapPlaceholder: {
-    height: MAP_HEIGHT,
     alignItems: 'center',
     justifyContent: 'center',
   },

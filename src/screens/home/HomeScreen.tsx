@@ -17,7 +17,7 @@ import {
   StatusBar,
   I18nManager,
   Platform,
-  Dimensions,
+  useWindowDimensions,
   RefreshControl,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -127,6 +127,8 @@ export default function HomeScreen() {
   const colors = useThemeColors();
   const theme = useAppTheme();
   const isRTL = I18nManager.isRTL;
+  const { width: windowWidth } = useWindowDimensions();
+  const screenWidth = Math.min(windowWidth, 480);
 
   const language = useSettingsStore((s) => s.language);
   const setLanguage = useSettingsStore((s) => s.setLanguage);
@@ -461,6 +463,7 @@ export default function HomeScreen() {
                   style={[
                     styles.alertCard,
                     {
+                      width: screenWidth * 0.75,
                       backgroundColor: `${severityColor(item.severity)}15`,
                       borderColor: severityColor(item.severity),
                     },
@@ -502,6 +505,7 @@ export default function HomeScreen() {
               style={[
                 styles.quickActionBtn,
                 {
+                  width: (screenWidth - 44) / 2,
                   backgroundColor: colors.card,
                   borderColor: colors.border,
                 },
@@ -652,7 +656,7 @@ export default function HomeScreen() {
 
 // ── Styles ───────────────────────────────────────────────────────
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+// Dimensions moved to useWindowDimensions inside the component
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -812,7 +816,6 @@ const styles = StyleSheet.create({
   alertCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: SCREEN_WIDTH * 0.75,
     borderWidth: 1,
     borderRadius: 12,
     padding: 12,
@@ -839,7 +842,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   quickActionBtn: {
-    width: (SCREEN_WIDTH - 44) / 2,
     alignItems: 'center',
     paddingVertical: 18,
     borderRadius: 14,
@@ -874,7 +876,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   statCard: {
-    width: 140,
+    minWidth: 120,
+    maxWidth: 160,
     alignItems: 'center',
     paddingVertical: 16,
   },

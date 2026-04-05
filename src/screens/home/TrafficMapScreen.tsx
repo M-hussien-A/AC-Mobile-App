@@ -16,8 +16,8 @@ import {
   StatusBar,
   I18nManager,
   Platform,
-  Dimensions,
   ActivityIndicator,
+  useWindowDimensions,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -60,9 +60,6 @@ const GOV_DISTRICT: Region = {
   latitudeDelta: 0.03,
   longitudeDelta: 0.03,
 };
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const BOTTOM_SHEET_HEIGHT = SCREEN_HEIGHT * 0.35;
 
 // ── Helpers ──────────────────────────────────────────────────────
 
@@ -127,6 +124,11 @@ function relativeTime(isoDate: string, t: (key: string) => string): string {
 // ── Component ────────────────────────────────────────────────────
 
 export default function TrafficMapScreen() {
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const SCREEN_WIDTH = Math.min(windowWidth, 480);
+  const SCREEN_HEIGHT = windowHeight;
+  const BOTTOM_SHEET_HEIGHT = SCREEN_HEIGHT * 0.35;
+
   const navigation = useNavigation<Nav>();
   const { t, i18n } = useTranslation();
   const colors = useThemeColors();
@@ -424,7 +426,7 @@ export default function TrafficMapScreen() {
       </Pressable>
 
       {/* ─── Map layer toggle (floating bottom-right) ────── */}
-      <View style={[styles.layerToggleContainer, { [isRTL ? 'left' : 'right']: 16 }]}>
+      <View style={[styles.layerToggleContainer, { bottom: BOTTOM_SHEET_HEIGHT + 60, [isRTL ? 'left' : 'right']: 16 }]}>
         <MapLayerToggle activeLayers={activeLayers} onToggleLayer={toggleLayer} />
       </View>
 
@@ -433,6 +435,7 @@ export default function TrafficMapScreen() {
         style={[
           styles.legendContainer,
           {
+            bottom: BOTTOM_SHEET_HEIGHT + 16,
             backgroundColor: colors.card,
             [isRTL ? 'right' : 'left']: 16,
             ...Platform.select({
@@ -466,6 +469,7 @@ export default function TrafficMapScreen() {
           style={[
             styles.bottomSheet,
             {
+              height: BOTTOM_SHEET_HEIGHT,
               backgroundColor: colors.surface,
               borderTopColor: colors.border,
             },
@@ -617,14 +621,12 @@ const styles = StyleSheet.create({
   // Layer toggle
   layerToggleContainer: {
     position: 'absolute',
-    bottom: BOTTOM_SHEET_HEIGHT + 60,
     zIndex: 10,
   },
 
   // Legend
   legendContainer: {
     position: 'absolute',
-    bottom: BOTTOM_SHEET_HEIGHT + 16,
     borderRadius: 10,
     padding: 10,
     zIndex: 9,
@@ -649,7 +651,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: BOTTOM_SHEET_HEIGHT,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderTopWidth: StyleSheet.hairlineWidth,
