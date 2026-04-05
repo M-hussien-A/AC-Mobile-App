@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, FlatList, StyleSheet, Pressable, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import MapView, { Marker } from '../../../utils/MapView';
@@ -17,19 +17,34 @@ export default function EVChargingMapScreen() {
   const colors = useThemeColors();
   const [stations, setStations] = useState<EVChargingStation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => { loadData(); }, []);
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     try {
       const data = await getEVChargingStations();
       setStations(data);
+    } catch (e) {
+      setError((e as Error).message);
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
+
+  useEffect(() => { loadData(); }, [loadData]);
 
   if (loading) return <View style={[styles.container, { backgroundColor: colors.background }]}><SkeletonLoader width="100%" height={300} /></View>;
+
+  if (error) return (
+    <View style={[styles.errorCenter, { backgroundColor: colors.background }]}>
+      <MaterialCommunityIcons name="alert-circle-outline" size={48} color={colors.error} />
+      <Text style={[styles.errorText, { color: colors.error }]}>{error}</Text>
+      <Pressable style={[styles.retryBtn, { backgroundColor: colors.primary }]} onPress={loadData}>
+        <Text style={styles.retryBtnText}>{t('common.retry')}</Text>
+      </Pressable>
+    </View>
+  );
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -88,4 +103,8 @@ const styles = StyleSheet.create({
   detail: { fontSize: 12, marginTop: 2 },
   statusBadge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8, alignSelf: 'flex-start', marginTop: 8 },
   statusText: { fontSize: 11, fontWeight: '600' },
+  errorCenter: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 12 },
+  errorText: { fontSize: 14, textAlign: 'center', paddingHorizontal: 32 },
+  retryBtn: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20 },
+  retryBtnText: { color: '#fff', fontSize: 14, fontWeight: '600' },
 });

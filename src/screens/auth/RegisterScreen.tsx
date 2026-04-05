@@ -10,6 +10,7 @@ import {
   ScrollView,
   ActivityIndicator,
   StatusBar,
+  I18nManager,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -18,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useThemeColors } from '../../theme';
+import { useThemeColors, brand } from '../../theme';
 import { useAuthStore } from '../../stores/authStore';
 import { useUserStore } from '../../stores/userStore';
 import { register } from '../../services/userService';
@@ -114,17 +115,30 @@ export default function RegisterScreen() {
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
-            style={styles.backButton}
+            hitSlop={{ top: 12, right: 12, bottom: 12, left: 12 }}
+            style={[
+              styles.backButton,
+              {
+                backgroundColor: colors.surfaceVariant,
+                alignSelf: I18nManager.isRTL ? 'flex-end' : 'flex-start',
+              },
+            ]}
           >
-            <MaterialCommunityIcons name="arrow-left" size={24} color={colors.text} />
+            <MaterialCommunityIcons
+              name={I18nManager.isRTL ? 'arrow-right' : 'arrow-left'}
+              size={24}
+              color={colors.text}
+            />
           </TouchableOpacity>
           <Text style={[styles.title, { color: colors.text }]}>{t('auth.register.title')}</Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+            {t('auth.register.subtitle') || ''}
+          </Text>
         </View>
 
         {/* Error */}
         {errorMessage && (
-          <View style={[styles.errorContainer, { backgroundColor: colors.error + '15' }]}>
+          <View style={[styles.errorContainer, { backgroundColor: colors.error + '12', borderColor: colors.error + '30' }]}>
             <MaterialCommunityIcons name="alert-circle" size={20} color={colors.error} />
             <Text style={[styles.errorText, { color: colors.error }]}>{errorMessage}</Text>
           </View>
@@ -148,7 +162,7 @@ export default function RegisterScreen() {
                 <MaterialCommunityIcons
                   name={field.icon}
                   size={20}
-                  color={colors.icon}
+                  color={fieldError ? colors.error : colors.icon}
                   style={styles.inputIcon}
                 />
                 <Controller
@@ -156,7 +170,7 @@ export default function RegisterScreen() {
                   name={field.name}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
-                      style={[styles.input, { color: colors.text }]}
+                      style={[styles.input, { color: colors.text, textAlign: I18nManager.isRTL ? 'right' : 'left' }]}
                       placeholder={t(field.labelKey)}
                       placeholderTextColor={colors.placeholder}
                       keyboardType={field.keyboardType ?? 'default'}
@@ -194,7 +208,24 @@ export default function RegisterScreen() {
 
         {/* Register button */}
         <TouchableOpacity
-          style={[styles.primaryButton, { backgroundColor: colors.primary }]}
+          style={[
+            styles.primaryButton,
+            {
+              backgroundColor: isLoading ? colors.disabled : colors.primary,
+              ...Platform.select({
+                ios: {
+                  shadowColor: colors.primary,
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: isLoading ? 0 : 0.3,
+                  shadowRadius: 8,
+                },
+                android: { elevation: isLoading ? 0 : 6 },
+                web: isLoading
+                  ? {}
+                  : ({ boxShadow: `0 4px 14px ${colors.primary}40` } as any),
+              }),
+            },
+          ]}
           onPress={handleSubmit(onSubmit)}
           activeOpacity={0.8}
           disabled={isLoading}
@@ -211,7 +242,7 @@ export default function RegisterScreen() {
           <Text style={[styles.loginLinkText, { color: colors.textSecondary }]}>
             {t('auth.register.hasAccount')}{' '}
           </Text>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Text style={[styles.loginLinkAction, { color: colors.primary }]}>
               {t('auth.register.signIn')}
             </Text>
@@ -228,35 +259,46 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: 28,
     paddingTop: 56,
-    paddingBottom: 32,
+    paddingBottom: 36,
   },
   header: {
-    marginBottom: 32,
+    marginBottom: 28,
   },
   backButton: {
-    marginBottom: 16,
-    alignSelf: 'flex-start',
+    marginBottom: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 28,
     fontWeight: '700',
+    marginBottom: 6,
+  },
+  subtitle: {
+    fontSize: 15,
+    lineHeight: 22,
   },
   errorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    padding: 14,
     borderRadius: 12,
-    marginBottom: 16,
+    marginBottom: 20,
+    borderWidth: 1,
   },
   errorText: {
     fontSize: 14,
-    marginLeft: 8,
+    marginStart: 10,
     flex: 1,
+    lineHeight: 20,
   },
   fieldContainer: {
-    marginBottom: 16,
+    marginBottom: 18,
   },
   label: {
     fontSize: 14,
@@ -266,36 +308,37 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderRadius: 12,
     paddingHorizontal: 16,
-    height: 52,
+    height: 54,
   },
   inputIcon: {
-    marginRight: 12,
+    marginEnd: 12,
   },
   input: {
     flex: 1,
     fontSize: 16,
-    height: '100%',
+    height: '100%' as any,
   },
   fieldError: {
     fontSize: 12,
-    marginTop: 4,
-    marginLeft: 4,
+    marginTop: 6,
+    marginStart: 4,
   },
   primaryButton: {
-    borderRadius: 12,
-    height: 52,
+    borderRadius: 14,
+    height: 54,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 8,
-    marginBottom: 16,
+    marginBottom: 20,
   },
   primaryButtonText: {
     color: '#FFFFFF',
     fontSize: 17,
     fontWeight: '700',
+    letterSpacing: 0.3,
   },
   loginLinkContainer: {
     flexDirection: 'row',
@@ -307,6 +350,6 @@ const styles = StyleSheet.create({
   },
   loginLinkAction: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });

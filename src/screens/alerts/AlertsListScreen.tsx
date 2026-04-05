@@ -298,7 +298,7 @@ export default function AlertsListScreen() {
   // ── Main Render ────────────────────────────────────────────
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={colors.isDark ? 'light-content' : 'dark-content'} />
 
       {/* Category Tabs + Filter Button */}
       <View style={[styles.tabBar, { borderBottomColor: colors.divider }]}>
@@ -372,6 +372,7 @@ export default function AlertsListScreen() {
         onPress={handleSOSPress}
         style={({ pressed }) => [
           styles.sosFloating,
+          isRTL ? styles.sosFloatingRTL : null,
           { opacity: pressed ? 0.85 : 1 },
         ]}
         accessibilityRole="button"
@@ -476,6 +477,10 @@ const styles = StyleSheet.create({
         elevation: 8,
       },
     }),
+  },
+  sosFloatingRTL: {
+    right: undefined,
+    left: 20,
   },
   sosFloatingText: {
     color: '#FFFFFF',

@@ -25,8 +25,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import MapView, { Polyline, Marker, Polygon, Region } from '../../utils/MapView';
 
-import { useThemeColors } from '../../theme';
-import { useAppTheme } from '../../theme';
+import { useThemeColors, useAppTheme } from '../../theme';
 import { HomeStackParamList } from '../../navigation/types';
 import { useTrafficStore } from '../../stores/trafficStore';
 
@@ -34,8 +33,6 @@ import * as trafficService from '../../services/trafficService';
 import * as incidentService from '../../services/incidentService';
 import * as dmsService from '../../services/dmsService';
 
-import { Card } from '../../components/common/Card';
-import { SkeletonLoader } from '../../components/common/SkeletonLoader';
 import TrafficMapView from '../../components/map/TrafficMapView';
 import MapLayerToggle from '../../components/map/MapLayerToggle';
 
@@ -51,6 +48,16 @@ import type {
 // ── Types ────────────────────────────────────────────────────────
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, 'TrafficMap'>;
+
+interface BottomSheetItem {
+  id: string;
+  type: 'incident' | 'dms';
+  title: string;
+  subtitle: string;
+  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  color: string;
+  data: Incident | DMSMessage;
+}
 
 // ── Constants ────────────────────────────────────────────────────
 
@@ -148,7 +155,6 @@ export default function TrafficMapScreen() {
   const [dmsMessages, setDmsMessages] = useState<DMSMessage[]>([]);
   const [workZones] = useState<WorkZone[]>([]); // Placeholder, no mock service yet
   const [zoomLevel, setZoomLevel] = useState(GOV_DISTRICT.latitudeDelta);
-  const [searchText, setSearchText] = useState('');
   const [bottomSheetVisible, setBottomSheetVisible] = useState(true);
 
   // ── Data loading ─────────────────────────────────────────────
@@ -185,11 +191,11 @@ export default function TrafficMapScreen() {
   }, []);
 
   // ── Bottom sheet items based on active layers ────────────────
-  const bottomSheetItems = useMemo(() => {
+  const bottomSheetItems = useMemo((): BottomSheetItem[] => {
     if (activeLayers.includes('incidents')) {
-      return incidents.map((inc) => ({
+      return incidents.map((inc): BottomSheetItem => ({
         id: inc.id,
-        type: 'incident' as const,
+        type: 'incident',
         title: i18n.language === 'ar' ? inc.titleAr : inc.title,
         subtitle: relativeTime(inc.startTime, t),
         icon: incidentIcon(inc.type),
@@ -198,12 +204,12 @@ export default function TrafficMapScreen() {
       }));
     }
     if (activeLayers.includes('dms')) {
-      return dmsMessages.map((dms) => ({
+      return dmsMessages.map((dms): BottomSheetItem => ({
         id: dms.id,
-        type: 'dms' as const,
+        type: 'dms',
         title: dms.signId,
         subtitle: i18n.language === 'ar' ? dms.messageAr : dms.message,
-        icon: 'message-alert' as keyof typeof MaterialCommunityIcons.glyphMap,
+        icon: 'message-alert',
         color: '#3B82F6',
         data: dms,
       }));
@@ -475,10 +481,15 @@ export default function TrafficMapScreen() {
             },
           ]}
         >
-          {/* Handle bar */}
-          <View style={styles.bottomSheetHandle}>
+          {/* Handle bar - press to dismiss */}
+          <Pressable
+            onPress={() => setBottomSheetVisible(false)}
+            style={styles.bottomSheetHandle}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.close')}
+          >
             <View style={[styles.handleBar, { backgroundColor: colors.disabled }]} />
-          </View>
+          </Pressable>
 
           <FlatList
             data={bottomSheetItems}
@@ -529,6 +540,33 @@ export default function TrafficMapScreen() {
             )}
           />
         </View>
+      )}
+
+      {/* ─── Show bottom sheet button (when hidden) ─────────── */}
+      {bottomSheetItems.length > 0 && !bottomSheetVisible && (
+        <Pressable
+          onPress={() => setBottomSheetVisible(true)}
+          style={[
+            styles.showSheetBtn,
+            {
+              backgroundColor: colors.card,
+              [isRTL ? 'left' : 'right']: 16,
+              ...Platform.select({
+                ios: {
+                  shadowColor: colors.shadow,
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 4,
+                },
+                android: { elevation: 4 },
+              }),
+            },
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel={t('traffic.showList')}
+        >
+          <MaterialCommunityIcons name="format-list-bulleted" size={22} color={colors.primary} />
+        </Pressable>
       )}
     </View>
   );
@@ -694,5 +732,17 @@ const styles = StyleSheet.create({
   },
   sheetCardSub: {
     fontSize: 12,
+  },
+
+  // Show bottom sheet button
+  showSheetBtn: {
+    position: 'absolute',
+    bottom: 24,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 10,
   },
 });

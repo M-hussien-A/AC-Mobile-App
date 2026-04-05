@@ -74,7 +74,7 @@ export default function RouteResultsScreen() {
 
   const [showSteps, setShowSteps] = useState(false);
   const stepsAnim = useRef(new Animated.Value(0)).current;
-  const mapRef = useRef<MapView>(null);
+  const mapRef = useRef<any>(null);
 
   const routes = currentPlan?.routes ?? [];
 
@@ -233,13 +233,14 @@ export default function RouteResultsScreen() {
         )}
 
         {/* Route option cards */}
-        {routes.map((r) => (
-          <RouteOptionCard
-            key={r.id}
-            route={r}
-            isSelected={r.id === selectedRoute?.id}
-            onPress={() => handleSelectRoute(r)}
-          />
+        {routes.map((r, idx) => (
+          <View key={r.id} style={idx < routes.length - 1 ? styles.routeCardSpacing : undefined}>
+            <RouteOptionCard
+              route={r}
+              isSelected={r.id === selectedRoute?.id}
+              onPress={() => handleSelectRoute(r)}
+            />
+          </View>
         ))}
 
         {/* Multimodal timeline for selected route */}
@@ -302,7 +303,7 @@ export default function RouteResultsScreen() {
       </ScrollView>
 
       {/* Start Navigation Button - Fixed at bottom */}
-      <View style={[styles.bottomBar, { backgroundColor: colors.background }]}>
+      <View style={[styles.bottomBar, { backgroundColor: colors.background, borderTopColor: colors.border }]}>
         <Button
           title={t('journey.startNavigation')}
           onPress={handleStartNavigation}
@@ -410,6 +411,9 @@ const styles = StyleSheet.create({
   },
   stepMeta: {
     fontSize: 12,
+  },
+  routeCardSpacing: {
+    marginBottom: 10,
   },
   bottomBar: {
     position: 'absolute',

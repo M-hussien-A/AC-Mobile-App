@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, ScrollView, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useThemeColors } from '../../../theme';
 import { Card, Button } from '../../../components/common';
 import { AccessibleText } from '../../../components/common';
-import { reserveParking } from '../../../services/parkingService';
+import { reserveParking, getParkingById } from '../../../services/parkingService';
 import { useUserStore } from '../../../stores/userStore';
 import { formatCurrency } from '../../../utils/helpers';
 
@@ -21,22 +21,48 @@ export default function ParkingReservationScreen() {
   const [duration, setDuration] = useState(2);
   const [selectedVehicle, setSelectedVehicle] = useState(0);
   const [loading, setLoading] = useState(false);
-  const ratePerHour = 15;
+  const [ratePerHour, setRatePerHour] = useState(15);
+  const [facilityLoading, setFacilityLoading] = useState(true);
   const totalPrice = ratePerHour * duration;
   const vehicles = profile?.savedVehicles ?? [{ plate: 'ABC 1234', make: 'Toyota', model: 'Camry' }];
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const facility = await getParkingById(route.params?.facilityId);
+        if (facility) {
+          setRatePerHour((facility as any).ratePerHour ?? 15);
+        }
+      } catch {
+        // Use default rate
+      } finally {
+        setFacilityLoading(false);
+      }
+    })();
+  }, [route.params?.facilityId]);
 
   const handleConfirm = async () => {
     setLoading(true);
     try {
       const result = await reserveParking(route.params?.facilityId, new Date().toISOString(), duration, vehicles[selectedVehicle].plate);
-      navigation.navigate('ParkingPayment', { reservationId: result.reservationId, amount: result.amount });
+      navigation.navigate('ParkingPayment', { reservationId: result.reservationId, amount: result.amount || totalPrice });
+    } catch (e) {
+      Alert.alert(t('common.error'), (e as Error).message || t('common.genericError'));
     } finally {
       setLoading(false);
     }
   };
 
+  if (facilityLoading) {
+    return (
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
   return (
-    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.scrollContent}>
       <Card style={styles.card}>
         <AccessibleText style={[styles.sectionTitle, { color: colors.text }]}>{t('parking.reservation.selectTime')}</AccessibleText>
         <AccessibleText style={[styles.label, { color: colors.textSecondary }]}>{t('parking.reservation.startTime')}</AccessibleText>
@@ -100,6 +126,8 @@ export default function ParkingReservationScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  scrollContent: { paddingTop: 12, paddingBottom: 24 },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   card: { marginHorizontal: 16, marginBottom: 12 },
   sectionTitle: { fontSize: 16, fontWeight: '700', marginBottom: 12 },
   label: { fontSize: 13, marginBottom: 6 },

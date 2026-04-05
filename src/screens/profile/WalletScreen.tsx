@@ -226,7 +226,7 @@ export default function WalletScreen() {
       </ScrollView>
 
       {/* Top Up Modal */}
-      <Modal visible={showTopUp} animationType="slide" transparent>
+      <Modal visible={showTopUp} animationType="slide" transparent onRequestClose={() => setShowTopUp(false)}>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
             <View style={styles.modalHeader}>

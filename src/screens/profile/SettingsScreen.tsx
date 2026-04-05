@@ -2,7 +2,7 @@
  * ACUD ITS Traveler Mobile App - Settings Screen
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -11,11 +11,17 @@ import {
   Switch,
   TouchableOpacity,
   Alert,
+  I18nManager,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { useThemeColors } from '../../theme';
 import { useSettingsStore } from '../../stores/settingsStore';
+import { ProfileStackParamList } from '../../navigation/types';
+
+type Nav = NativeStackNavigationProp<ProfileStackParamList, 'Settings'>;
 
 const MAP_LAYERS = [
   { key: 'trafficFlow', labelKey: 'settings.mapLayerTraffic' },
@@ -26,8 +32,10 @@ const MAP_LAYERS = [
 ];
 
 export default function SettingsScreen() {
+  const navigation = useNavigation<Nav>();
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const [dataSharing, setDataSharing] = useState(false);
 
   const isDarkMode = useSettingsStore((s) => s.isDarkMode);
   const toggleDarkMode = useSettingsStore((s) => s.toggleDarkMode);
@@ -178,12 +186,32 @@ export default function SettingsScreen() {
           (val) => setAvoidOption('avoidWorkZones', val),
         )}
 
+        {/* Notifications */}
+        {renderSectionHeader(t('settings.notificationsSection', 'Notifications'))}
+        <TouchableOpacity
+          style={[styles.row, { borderBottomColor: colors.divider }]}
+          onPress={() => navigation.navigate('NotificationPreferences')}
+          activeOpacity={0.7}
+        >
+          <View style={styles.rowLeft}>
+            <MaterialCommunityIcons name="bell-outline" size={20} color={colors.icon} style={styles.rowIcon} />
+            <Text style={[styles.rowLabel, { color: colors.text }]}>
+              {t('settings.notificationPreferences', 'Notification Preferences')}
+            </Text>
+          </View>
+          <MaterialCommunityIcons
+            name={I18nManager.isRTL ? 'chevron-left' : 'chevron-right'}
+            size={22}
+            color={colors.textTertiary}
+          />
+        </TouchableOpacity>
+
         {/* Privacy */}
         {renderSectionHeader(t('settings.privacySection'))}
         {renderToggleRow(
           t('settings.dataSharing'),
-          false,
-          () => {},
+          dataSharing,
+          (val) => setDataSharing(val),
           'shield-account',
         )}
         <TouchableOpacity

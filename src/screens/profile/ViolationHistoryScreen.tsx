@@ -189,7 +189,7 @@ export default function ViolationHistoryScreen() {
       {isLoading ? (
         <View style={styles.skeletonPad}>
           {Array.from({ length: 4 }).map((_, i) => (
-            <SkeletonCard key={i} />
+            <SkeletonCard key={i} style={styles.skeletonCardSpacing} />
           ))}
         </View>
       ) : filteredViolations.length === 0 ? (
@@ -212,7 +212,7 @@ export default function ViolationHistoryScreen() {
       )}
 
       {/* Detail Modal */}
-      <Modal visible={!!selectedViolation} animationType="slide" transparent>
+      <Modal visible={!!selectedViolation} animationType="slide" transparent onRequestClose={() => setSelectedViolation(null)}>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -328,6 +328,9 @@ const styles = StyleSheet.create({
   },
   skeletonPad: {
     paddingHorizontal: 16,
+  },
+  skeletonCardSpacing: {
+    marginBottom: 12,
   },
   violationCard: {
     gap: 12,

@@ -26,8 +26,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import MapView, { Polyline } from '../../utils/MapView';
 
-import { useThemeColors } from '../../theme';
-import { useAppTheme } from '../../theme';
+import { useThemeColors, useAppTheme } from '../../theme';
 import { HomeStackParamList } from '../../navigation/types';
 import { useTrafficStore } from '../../stores/trafficStore';
 import { useAlertStore } from '../../stores/alertStore';
@@ -268,16 +267,19 @@ export default function HomeScreen() {
       icon: 'traffic-light' as const,
       count: intersections.length,
       label: t('home.intersections'),
+      onPress: () => navigation.navigate('TrafficMap'),
     },
     {
       icon: 'car-emergency' as const,
       count: incidents.length,
       label: t('home.activeIncidents'),
+      onPress: () => navigation.navigate('TrafficMap'),
     },
     {
       icon: 'message-alert' as const,
       count: dmsMessages.length,
       label: t('home.dmsMessages'),
+      onPress: () => navigation.navigate('DMSMessageList'),
     },
   ];
 
@@ -536,7 +538,7 @@ export default function HomeScreen() {
           inverted={isRTL}
           scrollEnabled={true}
           renderItem={({ item }) => (
-            <Card style={styles.statCard}>
+            <Card style={styles.statCard} onPress={item.onPress} accessibilityLabel={`${item.label}: ${item.count}`}>
               <MaterialCommunityIcons name={item.icon} size={28} color={colors.primary} />
               <Text style={[styles.statCount, { color: colors.text }]}>{item.count}</Text>
               <Text

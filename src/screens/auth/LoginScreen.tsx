@@ -10,6 +10,7 @@ import {
   ScrollView,
   ActivityIndicator,
   StatusBar,
+  I18nManager,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -18,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useThemeColors } from '../../theme';
+import { useThemeColors, brand } from '../../theme';
 import { useAuthStore } from '../../stores/authStore';
 import { useUserStore } from '../../stores/userStore';
 import { login, loginWithSSO } from '../../services/userService';
@@ -82,7 +83,7 @@ export default function LoginScreen() {
     }
   };
 
-  const dynamicStyles = getDynamicStyles(colors);
+  const disabled = isLoading || isSSOLoading;
 
   return (
     <KeyboardAvoidingView
@@ -100,7 +101,26 @@ export default function LoginScreen() {
       >
         {/* Logo */}
         <View style={styles.logoContainer}>
-          <View style={dynamicStyles.logoCircle}>
+          <View
+            style={[
+              styles.logoCircle,
+              {
+                backgroundColor: colors.primary + '12',
+                ...Platform.select({
+                  ios: {
+                    shadowColor: colors.primary,
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.15,
+                    shadowRadius: 12,
+                  },
+                  android: { elevation: 4 },
+                  web: {
+                    boxShadow: `0 4px 20px ${colors.primary}20`,
+                  } as any,
+                }),
+              },
+            ]}
+          >
             <MaterialCommunityIcons name="traffic-light" size={48} color={colors.accent} />
           </View>
           <Text style={[styles.title, { color: colors.text }]}>{t('auth.login.title')}</Text>
@@ -109,9 +129,9 @@ export default function LoginScreen() {
           </Text>
         </View>
 
-        {/* Error */}
+        {/* Error banner */}
         {errorMessage && (
-          <View style={[styles.errorContainer, { backgroundColor: colors.error + '15' }]}>
+          <View style={[styles.errorContainer, { backgroundColor: colors.error + '12', borderColor: colors.error + '30' }]}>
             <MaterialCommunityIcons name="alert-circle" size={20} color={colors.error} />
             <Text style={[styles.errorText, { color: colors.error }]}>{errorMessage}</Text>
           </View>
@@ -123,16 +143,24 @@ export default function LoginScreen() {
           <View
             style={[
               styles.inputContainer,
-              { borderColor: errors.email ? colors.error : colors.border, backgroundColor: colors.surface },
+              {
+                borderColor: errors.email ? colors.error : colors.border,
+                backgroundColor: colors.surface,
+              },
             ]}
           >
-            <MaterialCommunityIcons name="email-outline" size={20} color={colors.icon} style={styles.inputIcon} />
+            <MaterialCommunityIcons
+              name="email-outline"
+              size={20}
+              color={errors.email ? colors.error : colors.icon}
+              style={styles.inputIcon}
+            />
             <Controller
               control={control}
               name="email"
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
-                  style={[styles.input, { color: colors.text }]}
+                  style={[styles.input, { color: colors.text, textAlign: I18nManager.isRTL ? 'right' : 'left' }]}
                   placeholder={t('auth.login.email')}
                   placeholderTextColor={colors.placeholder}
                   keyboardType="email-address"
@@ -141,7 +169,7 @@ export default function LoginScreen() {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  editable={!isLoading && !isSSOLoading}
+                  editable={!disabled}
                 />
               )}
             />
@@ -159,16 +187,24 @@ export default function LoginScreen() {
           <View
             style={[
               styles.inputContainer,
-              { borderColor: errors.password ? colors.error : colors.border, backgroundColor: colors.surface },
+              {
+                borderColor: errors.password ? colors.error : colors.border,
+                backgroundColor: colors.surface,
+              },
             ]}
           >
-            <MaterialCommunityIcons name="lock-outline" size={20} color={colors.icon} style={styles.inputIcon} />
+            <MaterialCommunityIcons
+              name="lock-outline"
+              size={20}
+              color={errors.password ? colors.error : colors.icon}
+              style={styles.inputIcon}
+            />
             <Controller
               control={control}
               name="password"
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
-                  style={[styles.input, { color: colors.text }]}
+                  style={[styles.input, { color: colors.text, textAlign: I18nManager.isRTL ? 'right' : 'left' }]}
                   placeholder={t('auth.login.password')}
                   placeholderTextColor={colors.placeholder}
                   secureTextEntry={!showPassword}
@@ -176,11 +212,14 @@ export default function LoginScreen() {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  editable={!isLoading && !isSSOLoading}
+                  editable={!disabled}
                 />
               )}
             />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}>
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
+            >
               <MaterialCommunityIcons
                 name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                 size={20}
@@ -196,7 +235,9 @@ export default function LoginScreen() {
         </View>
 
         {/* Forgot password */}
-        <TouchableOpacity style={styles.forgotPassword}>
+        <TouchableOpacity
+          style={[styles.forgotPassword, { alignSelf: I18nManager.isRTL ? 'flex-start' : 'flex-end' }]}
+        >
           <Text style={[styles.forgotPasswordText, { color: colors.primary }]}>
             {t('auth.login.forgotPassword')}
           </Text>
@@ -204,10 +245,27 @@ export default function LoginScreen() {
 
         {/* Login button */}
         <TouchableOpacity
-          style={[styles.primaryButton, { backgroundColor: colors.primary }]}
+          style={[
+            styles.primaryButton,
+            {
+              backgroundColor: disabled ? colors.disabled : colors.primary,
+              ...Platform.select({
+                ios: {
+                  shadowColor: colors.primary,
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: disabled ? 0 : 0.3,
+                  shadowRadius: 8,
+                },
+                android: { elevation: disabled ? 0 : 6 },
+                web: disabled
+                  ? {}
+                  : ({ boxShadow: `0 4px 14px ${colors.primary}40` } as any),
+              }),
+            },
+          ]}
           onPress={handleSubmit(onSubmit)}
           activeOpacity={0.8}
-          disabled={isLoading || isSSOLoading}
+          disabled={disabled}
         >
           {isLoading ? (
             <ActivityIndicator color="#FFFFFF" />
@@ -216,12 +274,38 @@ export default function LoginScreen() {
           )}
         </TouchableOpacity>
 
+        {/* Divider */}
+        <View style={styles.dividerRow}>
+          <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
+          <Text style={[styles.dividerText, { color: colors.textTertiary }]}>
+            {t('auth.login.or') || 'OR'}
+          </Text>
+          <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
+        </View>
+
         {/* SSO button */}
         <TouchableOpacity
-          style={[styles.ssoButton, { backgroundColor: colors.accent }]}
+          style={[
+            styles.ssoButton,
+            {
+              backgroundColor: disabled ? colors.disabled : colors.accent,
+              ...Platform.select({
+                ios: {
+                  shadowColor: brand.accentDark,
+                  shadowOffset: { width: 0, height: 3 },
+                  shadowOpacity: disabled ? 0 : 0.25,
+                  shadowRadius: 6,
+                },
+                android: { elevation: disabled ? 0 : 4 },
+                web: disabled
+                  ? {}
+                  : ({ boxShadow: `0 3px 12px ${brand.accentDark}40` } as any),
+              }),
+            },
+          ]}
           onPress={onSSOPress}
           activeOpacity={0.8}
-          disabled={isLoading || isSSOLoading}
+          disabled={disabled}
         >
           {isSSOLoading ? (
             <ActivityIndicator color="#FFFFFF" />
@@ -249,56 +333,55 @@ export default function LoginScreen() {
   );
 }
 
-function getDynamicStyles(colors: ReturnType<typeof useThemeColors>) {
-  return {
-    logoCircle: {
-      width: 88,
-      height: 88,
-      borderRadius: 44,
-      backgroundColor: colors.primary + '12',
-      justifyContent: 'center' as const,
-      alignItems: 'center' as const,
-      marginBottom: 20,
-    },
-  };
-}
-
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: 24,
-    paddingTop: 60,
-    paddingBottom: 32,
+    paddingHorizontal: 28,
+    paddingTop: 64,
+    paddingBottom: 36,
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 32,
+    marginBottom: 36,
+  },
+  logoCircle: {
+    width: 92,
+    height: 92,
+    borderRadius: 46,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: '700',
-    marginBottom: 4,
+    marginBottom: 6,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 15,
+    textAlign: 'center',
+    lineHeight: 22,
   },
   errorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    padding: 14,
     borderRadius: 12,
-    marginBottom: 16,
+    marginBottom: 20,
+    borderWidth: 1,
   },
   errorText: {
     fontSize: 14,
-    marginLeft: 8,
+    marginStart: 10,
     flex: 1,
+    lineHeight: 20,
   },
   fieldContainer: {
-    marginBottom: 16,
+    marginBottom: 18,
   },
   label: {
     fontSize: 14,
@@ -308,54 +391,70 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderRadius: 12,
     paddingHorizontal: 16,
-    height: 52,
+    height: 54,
   },
   inputIcon: {
-    marginRight: 12,
+    marginEnd: 12,
   },
   input: {
     flex: 1,
     fontSize: 16,
-    height: '100%',
+    height: '100%' as any,
   },
   fieldError: {
     fontSize: 12,
-    marginTop: 4,
-    marginLeft: 4,
+    marginTop: 6,
+    marginStart: 4,
   },
   forgotPassword: {
-    alignSelf: 'flex-end',
-    marginBottom: 24,
+    marginBottom: 28,
   },
   forgotPasswordText: {
     fontSize: 14,
     fontWeight: '500',
   },
   primaryButton: {
-    borderRadius: 12,
-    height: 52,
+    borderRadius: 14,
+    height: 54,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   primaryButtonText: {
     color: '#FFFFFF',
     fontSize: 17,
     fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+  },
+  dividerText: {
+    fontSize: 13,
+    fontWeight: '500',
+    marginHorizontal: 16,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   ssoButton: {
-    borderRadius: 12,
-    height: 52,
+    borderRadius: 14,
+    height: 54,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 28,
   },
   ssoIcon: {
-    marginRight: 8,
+    marginEnd: 10,
   },
   ssoButtonText: {
     color: '#FFFFFF',
@@ -372,6 +471,6 @@ const styles = StyleSheet.create({
   },
   registerLinkAction: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });

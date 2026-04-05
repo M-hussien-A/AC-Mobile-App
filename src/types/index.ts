@@ -348,6 +348,7 @@ export interface UserProfile {
   workLocation?: LatLng;
   notificationsEnabled: boolean;
   darkModeEnabled: boolean;
+  walletBalanceEGP: number;
   savedRoutes: string[];
   createdAt: string;
   updatedAt: string;

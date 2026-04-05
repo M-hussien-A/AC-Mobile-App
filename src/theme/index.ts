@@ -85,6 +85,7 @@ export function ThemeProvider({ isDark, children }: { isDark: boolean; children:
 export function useThemeColors() {
   const theme = useAppTheme();
   return {
+    isDark: theme.isDark,
     // Brand
     primary: theme.brand.primary,
     primaryLight: theme.brand.primaryLight,

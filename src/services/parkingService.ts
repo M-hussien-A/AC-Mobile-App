@@ -56,7 +56,7 @@ export async function reserveParking(
 ): Promise<{ reservationId: string; amount: number }> {
   const data = await getData();
   const facility = data.find((p) => p.id === facilityId);
-  const amount = (facility?.pricePerHourEGP ?? 10) * durationHours;
+  const amount = ((facility as any)?.ratePerHour ?? 10) * durationHours;
   return mockFetch({ reservationId: `RES-${Date.now()}`, amount });
 }
 

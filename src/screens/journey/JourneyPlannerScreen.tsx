@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   fieldIcon: {
-    marginRight: 10,
+    marginEnd: 10,
   },
   fieldInput: {
     flex: 1,
@@ -520,13 +520,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 12,
     fontSize: 15,
+    textAlign: 'auto',
+    writingDirection: 'auto',
   },
   gpsButton: {
     width: 44,
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 6,
+    marginStart: 6,
   },
   swapButton: {
     alignSelf: 'center',
@@ -541,7 +543,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     marginBottom: 8,
-    marginLeft: 30,
+    marginStart: 30,
   },
   suggestionItem: {
     flexDirection: 'row',

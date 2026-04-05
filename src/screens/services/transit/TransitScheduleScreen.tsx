@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -18,16 +18,19 @@ export default function TransitScheduleScreen() {
   const [transitRoute, setTransitRoute] = useState<TransitRoute | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => { loadData(); }, []);
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
+    setLoading(true);
     try {
       const data = await getRouteById(route.params?.routeId);
       if (data) setTransitRoute(data);
+    } catch {
+      // Will show noResults state
     } finally {
       setLoading(false);
     }
-  }
+  }, [route.params?.routeId]);
+
+  useEffect(() => { loadData(); }, [loadData]);
 
   if (loading) return <View style={[styles.center, { backgroundColor: colors.background }]}><ActivityIndicator size="large" color={colors.primary} /></View>;
   if (!transitRoute) return <View style={[styles.center, { backgroundColor: colors.background }]}><AccessibleText>{t('common.noResults')}</AccessibleText></View>;

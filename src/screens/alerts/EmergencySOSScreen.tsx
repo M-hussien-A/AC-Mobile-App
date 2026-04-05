@@ -48,7 +48,7 @@ interface EmergencyTypeOption {
 
 // ── Constants ──────────────────────────────────────────────────
 const EMERGENCY_TYPES: EmergencyTypeOption[] = [
-  { type: 'accident', icon: 'car-crash', label: 'Accident' },
+  { type: 'accident', icon: 'car-emergency', label: 'Accident' },
   { type: 'medical', icon: 'hospital', label: 'Medical' },
   { type: 'security', icon: 'shield-alert', label: 'Security' },
 ];

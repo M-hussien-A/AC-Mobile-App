@@ -70,7 +70,7 @@ export default function EvacuationRouteScreen() {
   const { t, i18n } = useTranslation();
   const colors = useThemeColors();
   const isAr = i18n.language === 'ar';
-  const mapRef = useRef<MapView>(null);
+  const mapRef = useRef<any>(null);
 
   // State
   const [loading, setLoading] = useState(true);

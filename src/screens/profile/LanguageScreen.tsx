@@ -28,7 +28,10 @@ export default function LanguageScreen() {
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={styles.scrollContent}
+    >
       <AccessibleText style={[styles.header, { color: colors.textSecondary }]}>{t('settings.selectLanguage')}</AccessibleText>
       {LANGUAGES.map((lang) => {
         const isSelected = language === lang.code;
@@ -57,6 +60,7 @@ export default function LanguageScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  scrollContent: { paddingBottom: 32 },
   header: { fontSize: 14, padding: 16, paddingBottom: 8 },
   card: { marginHorizontal: 16, marginBottom: 12 },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },

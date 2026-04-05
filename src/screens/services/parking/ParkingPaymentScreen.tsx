@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, Modal } from 'react-native';
+import { View, ScrollView, StyleSheet, Modal, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -27,6 +27,8 @@ export default function ParkingPaymentScreen() {
       const result = await processPayment(amount, method as any, 'Parking');
       setQrCode(result.qrCode);
       setShowSuccess(true);
+    } catch (e) {
+      Alert.alert(t('common.error'), (e as Error).message || t('payment.failed'));
     } finally {
       setLoading(false);
     }

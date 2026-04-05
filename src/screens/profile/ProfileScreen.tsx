@@ -158,7 +158,9 @@ export default function ProfileScreen() {
           </Text>
         </Card>
         <Card style={styles.statCard}>
-          <Text style={[styles.statValue, { color: colors.primary }]}>2,500</Text>
+          <Text style={[styles.statValue, { color: colors.primary }]}>
+            {profile?.walletBalanceEGP?.toLocaleString() ?? '0'}
+          </Text>
           <Text style={[styles.statLabel, { color: colors.textSecondary }]} numberOfLines={1}>
             {t('profile.quickStats.walletBalance')}
           </Text>
