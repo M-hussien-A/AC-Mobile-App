@@ -518,6 +518,12 @@
   "report.removePhoto": "إزالة الصورة",
   "report.selectCategory": "اختر الفئة",
   "report.submitted": "تم الإرسال",
+  "report.submitError": "فشل إرسال البلاغ. يرجى المحاولة مرة أخرى.",
+  "report.categories.roadCondition": "حالة الطريق",
+  "report.categories.signalMalfunction": "عطل إشارة مرور",
+  "report.categories.pothole": "حفرة",
+  "report.categories.hazard": "خطر على الطريق",
+  "report.categories.other": "أخرى",
   "report.submittedMsg": "تم إرسال بلاغك بنجاح",
 
   "tabs.home": "الرئيسية",

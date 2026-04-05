@@ -519,6 +519,12 @@
   "report.selectCategory": "Select Category",
   "report.submitted": "Submitted",
   "report.submittedMsg": "Your report has been submitted successfully",
+  "report.submitError": "Failed to submit report. Please try again.",
+  "report.categories.roadCondition": "Road Condition",
+  "report.categories.signalMalfunction": "Signal Malfunction",
+  "report.categories.pothole": "Pothole",
+  "report.categories.hazard": "Road Hazard",
+  "report.categories.other": "Other",
 
   "tabs.home": "Home",
   "tabs.journey": "Journey",
