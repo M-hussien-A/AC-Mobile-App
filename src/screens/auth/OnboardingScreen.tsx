@@ -12,22 +12,29 @@ import {
   Platform,
   I18nManager,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../stores/authStore';
 import { AuthStackParamList } from '../../navigation/types';
-import { brand } from '../../theme';
+import SplashMapBackground from '../../components/SplashMapBackground';
 
 type Nav = NativeStackNavigationProp<AuthStackParamList, 'Onboarding'>;
+
+// NAC map-inspired palette
+const CREAM = '#F3EDE4';
+const CHARCOAL = '#2E2E2E';
+const CHARCOAL_LIGHT = '#5A564E';
+const COPPER = '#C45C2C';
+const COPPER_LIGHT = '#D4784A';
+const WHITE = '#FFFFFF';
 
 interface Slide {
   icon: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
   titleKey: string;
   descriptionKey: string;
-  accentColor: string;
+  accent: string;
 }
 
 const slides: Slide[] = [
@@ -35,24 +42,24 @@ const slides: Slide[] = [
     icon: 'traffic-light',
     titleKey: 'auth.onboarding.slide1.title',
     descriptionKey: 'auth.onboarding.slide1.description',
-    accentColor: brand.accent,
+    accent: COPPER,
   },
   {
     icon: 'map-marker-path',
     titleKey: 'auth.onboarding.slide2.title',
     descriptionKey: 'auth.onboarding.slide2.description',
-    accentColor: brand.accentLight,
+    accent: '#8B6914',
   },
   {
     icon: 'apps',
     titleKey: 'auth.onboarding.slide3.title',
     descriptionKey: 'auth.onboarding.slide3.description',
-    accentColor: brand.accent,
+    accent: COPPER_LIGHT,
   },
 ];
 
 export default function OnboardingScreen() {
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height } = useWindowDimensions();
   const width = Math.min(windowWidth, 480);
 
   const navigation = useNavigation<Nav>();
@@ -86,17 +93,19 @@ export default function OnboardingScreen() {
   }, [completeOnboarding, navigation]);
 
   const isLast = activeIndex === slides.length - 1;
+  const currentSlide = slides[activeIndex];
 
   return (
-    <LinearGradient
-      colors={[brand.primaryDark, brand.primary, brand.primaryLight]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0.5, y: 1 }}
-      style={styles.container}
-    >
-      <StatusBar barStyle="light-content" backgroundColor={brand.primaryDark} />
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={CREAM} />
 
-      {/* Skip button - RTL aware positioning */}
+      {/* Map background */}
+      <SplashMapBackground width={windowWidth} height={height} opacity={0.5} />
+
+      {/* Overlay for readability */}
+      <View style={styles.overlay} />
+
+      {/* Skip button */}
       {!isLast && (
         <TouchableOpacity
           style={[
@@ -122,16 +131,20 @@ export default function OnboardingScreen() {
       >
         {slides.map((slide, index) => (
           <View key={index} style={[styles.slide, { width }]}>
-            {/* Outer glow ring */}
-            <View style={styles.iconGlow}>
-              <View style={styles.iconContainer}>
+            {/* Icon with map-style badge */}
+            <View style={styles.iconOuter}>
+              <View style={[styles.iconInner, { borderColor: slide.accent }]}>
                 <MaterialCommunityIcons
                   name={slide.icon}
-                  size={80}
-                  color={slide.accentColor}
+                  size={56}
+                  color={slide.accent}
                 />
               </View>
             </View>
+
+            {/* Copper accent line */}
+            <View style={[styles.slideAccent, { backgroundColor: slide.accent }]} />
+
             <Text style={styles.slideTitle}>{t(slide.titleKey)}</Text>
             <Text style={styles.slideDescription}>{t(slide.descriptionKey)}</Text>
           </View>
@@ -140,6 +153,11 @@ export default function OnboardingScreen() {
 
       {/* Bottom controls */}
       <View style={styles.bottomContainer}>
+        {/* Step indicator */}
+        <Text style={styles.stepText}>
+          {activeIndex + 1} / {slides.length}
+        </Text>
+
         {/* Dots */}
         <View style={styles.dotsContainer}>
           {slides.map((_, index) => (
@@ -167,7 +185,7 @@ export default function OnboardingScreen() {
               <MaterialCommunityIcons
                 name="rocket-launch-outline"
                 size={20}
-                color={brand.primaryDark}
+                color={WHITE}
                 style={{ marginEnd: 8 }}
               />
               <Text style={styles.nextButtonTextLast}>
@@ -175,32 +193,47 @@ export default function OnboardingScreen() {
               </Text>
             </View>
           ) : (
-            <Text style={styles.nextButtonText}>
-              {t('auth.onboarding.next')}
-            </Text>
+            <View style={styles.nextButtonInner}>
+              <Text style={styles.nextButtonText}>
+                {t('auth.onboarding.next')}
+              </Text>
+              <MaterialCommunityIcons
+                name={I18nManager.isRTL ? 'chevron-left' : 'chevron-right'}
+                size={20}
+                color={COPPER}
+                style={{ marginStart: 4 }}
+              />
+            </View>
           )}
         </TouchableOpacity>
       </View>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: CREAM,
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(243, 237, 228, 0.55)',
   },
   skipButton: {
     position: 'absolute',
     top: 56,
     zIndex: 10,
     paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: 'rgba(46, 46, 46, 0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(46, 46, 46, 0.1)',
   },
   skipText: {
-    color: 'rgba(255,255,255,0.85)',
-    fontSize: 15,
+    color: CHARCOAL_LIGHT,
+    fontSize: 14,
     fontWeight: '500',
   },
   slidesContentContainer: {
@@ -212,102 +245,128 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 40,
   },
-  iconGlow: {
-    width: 164,
-    height: 164,
-    borderRadius: 82,
-    backgroundColor: 'rgba(212, 168, 75, 0.06)',
+  iconOuter: {
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    backgroundColor: 'rgba(243, 237, 228, 0.85)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 44,
-  },
-  iconContainer: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
+    marginBottom: 28,
     ...Platform.select({
       ios: {
-        shadowColor: '#D4A84B',
+        shadowColor: CHARCOAL,
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
+        shadowOpacity: 0.1,
         shadowRadius: 16,
       },
       android: {
-        elevation: 6,
+        elevation: 5,
       },
       web: {
-        boxShadow: '0 4px 20px rgba(212, 168, 75, 0.2)',
+        boxShadow: '0 4px 20px rgba(46, 46, 46, 0.1)',
       } as any,
     }),
   },
+  iconInner: {
+    width: 105,
+    height: 105,
+    borderRadius: 52.5,
+    backgroundColor: WHITE,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    ...Platform.select({
+      ios: {
+        shadowColor: COPPER,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.12,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 3,
+      },
+      web: {
+        boxShadow: '0 2px 12px rgba(196, 92, 44, 0.12)',
+      } as any,
+    }),
+  },
+  slideAccent: {
+    width: 48,
+    height: 3,
+    borderRadius: 1.5,
+    marginBottom: 24,
+  },
   slideTitle: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: CHARCOAL,
     textAlign: 'center',
-    marginBottom: 16,
-    lineHeight: 34,
+    marginBottom: 14,
+    lineHeight: 32,
   },
   slideDescription: {
-    fontSize: 16,
-    color: 'rgba(255,255,255,0.7)',
+    fontSize: 15,
+    color: CHARCOAL_LIGHT,
     textAlign: 'center',
-    lineHeight: 26,
+    lineHeight: 24,
     paddingHorizontal: 8,
   },
   bottomContainer: {
     paddingHorizontal: 24,
-    paddingBottom: 48,
+    paddingBottom: Platform.OS === 'web' ? 40 : 48,
     alignItems: 'center',
+  },
+  stepText: {
+    fontSize: 12,
+    color: CHARCOAL_LIGHT,
+    letterSpacing: 2,
+    fontWeight: '500',
+    marginBottom: 12,
   },
   dotsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 28,
+    marginBottom: 24,
   },
   dot: {
-    height: 10,
-    borderRadius: 5,
+    height: 8,
+    borderRadius: 4,
     marginHorizontal: 5,
   },
   dotActive: {
-    backgroundColor: brand.accent,
+    backgroundColor: COPPER,
     width: 28,
   },
   dotInactive: {
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    width: 10,
+    backgroundColor: 'rgba(46, 46, 46, 0.15)',
+    width: 8,
   },
   nextButton: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
     borderRadius: 14,
     paddingVertical: 16,
     paddingHorizontal: 48,
     width: '100%',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
+    borderWidth: 1.5,
+    borderColor: COPPER,
+    backgroundColor: 'rgba(243, 237, 228, 0.9)',
   },
   nextButtonLast: {
-    backgroundColor: brand.accent,
-    borderColor: brand.accent,
+    backgroundColor: COPPER,
+    borderColor: COPPER,
     ...Platform.select({
       ios: {
-        shadowColor: '#D4A84B',
+        shadowColor: COPPER,
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.4,
+        shadowOpacity: 0.3,
         shadowRadius: 8,
       },
       android: {
         elevation: 6,
       },
       web: {
-        boxShadow: '0 4px 16px rgba(212, 168, 75, 0.4)',
+        boxShadow: '0 4px 16px rgba(196, 92, 44, 0.3)',
       } as any,
     }),
   },
@@ -317,13 +376,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   nextButtonText: {
-    color: '#FFFFFF',
-    fontSize: 17,
+    color: COPPER,
+    fontSize: 16,
     fontWeight: '600',
   },
   nextButtonTextLast: {
-    color: brand.primaryDark,
-    fontSize: 18,
+    color: WHITE,
+    fontSize: 17,
     fontWeight: '700',
   },
 });
