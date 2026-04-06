@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, ScrollView, StyleSheet, ActivityIndicator, Linking, Platform } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -19,28 +19,42 @@ export default function ParkingDetailScreen() {
   const [facility, setFacility] = useState<ParkingFacility | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
+    setLoading(true);
     try {
       const data = await getParkingById(route.params?.facilityId);
       if (data) setFacility(data);
+    } catch (e) {
+      // Silently handle - will show noResults state
     } finally {
       setLoading(false);
     }
-  }
+  }, [route.params?.facilityId]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   if (loading) return <View style={[styles.center, { backgroundColor: colors.background }]}><ActivityIndicator size="large" color={colors.primary} /></View>;
   if (!facility) return <View style={[styles.center, { backgroundColor: colors.background }]}><AccessibleText>{t('common.noResults')}</AccessibleText></View>;
 
   const isAr = i18n.language === 'ar';
-  const name = isAr ? (facility as any).nameAr || facility.name : facility.name;
-  const ratePerHour = (facility as any).ratePerHour ?? (facility as any).pricePerHourEGP ?? 10;
-  const ratePerDay = (facility as any).ratePerDay ?? (facility as any).pricePerDayEGP ?? ratePerHour * 5;
+  const name = isAr ? (facility.nameAr || facility.name) : facility.name;
+  const ratePerHour = (facility as any).ratePerHour ?? 10;
+  const ratePerDay = (facility as any).ratePerDay ?? ratePerHour * 5;
   const isFull = facility.availableSpaces === 0;
-  const amenities = (facility as any).amenities ?? (facility as any).features ?? [];
+  const amenities: string[] = (facility as any).amenities ?? [];
+
+  const handleNavigateHere = () => {
+    const lat = facility.location?.latitude ?? 30.02;
+    const lng = facility.location?.longitude ?? 31.76;
+    const url = Platform.select({
+      ios: `maps:0,0?q=${lat},${lng}`,
+      android: `geo:${lat},${lng}?q=${lat},${lng}(${encodeURIComponent(facility.name)})`,
+      default: `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
+    });
+    if (url) Linking.openURL(url).catch(() => {});
+  };
 
   const FEATURE_ICONS: Record<string, { icon: string; label: string }> = {
     ev_charging: { icon: 'ev-station', label: t('parking.features.evCharging') },
@@ -52,7 +66,7 @@ export default function ParkingDetailScreen() {
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.scrollContent}>
       <Card style={styles.card}>
         <AccessibleText style={[styles.name, { color: colors.text }]}>{name}</AccessibleText>
         <View style={[styles.typeBadge, { backgroundColor: colors.primary + '20' }]}>
@@ -113,7 +127,7 @@ export default function ParkingDetailScreen() {
         />
         <Button
           title={t('parking.navigateHere')}
-          onPress={() => navigation.navigate('JourneyTab')}
+          onPress={handleNavigateHere}
           variant="secondary"
           fullWidth
           icon="navigation"
@@ -125,6 +139,7 @@ export default function ParkingDetailScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  scrollContent: { paddingTop: 12, paddingBottom: 24 },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   card: { marginHorizontal: 16, marginBottom: 12 },
   name: { fontSize: 22, fontWeight: '700', marginBottom: 8 },

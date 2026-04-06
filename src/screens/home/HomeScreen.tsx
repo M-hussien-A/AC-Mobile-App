@@ -17,17 +17,16 @@ import {
   StatusBar,
   I18nManager,
   Platform,
-  Dimensions,
+  useWindowDimensions,
   RefreshControl,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
-import MapView, { Polyline } from 'react-native-maps';
+import MapView, { Polyline } from '../../utils/MapView';
 
-import { useThemeColors } from '../../theme';
-import { useAppTheme } from '../../theme';
+import { useThemeColors, useAppTheme } from '../../theme';
 import { HomeStackParamList } from '../../navigation/types';
 import { useTrafficStore } from '../../stores/trafficStore';
 import { useAlertStore } from '../../stores/alertStore';
@@ -127,6 +126,8 @@ export default function HomeScreen() {
   const colors = useThemeColors();
   const theme = useAppTheme();
   const isRTL = I18nManager.isRTL;
+  const { width: windowWidth } = useWindowDimensions();
+  const screenWidth = Math.min(windowWidth, 480);
 
   const language = useSettingsStore((s) => s.language);
   const setLanguage = useSettingsStore((s) => s.setLanguage);
@@ -266,16 +267,19 @@ export default function HomeScreen() {
       icon: 'traffic-light' as const,
       count: intersections.length,
       label: t('home.intersections'),
+      onPress: () => navigation.navigate('TrafficMap'),
     },
     {
       icon: 'car-emergency' as const,
       count: incidents.length,
       label: t('home.activeIncidents'),
+      onPress: () => navigation.navigate('TrafficMap'),
     },
     {
       icon: 'message-alert' as const,
       count: dmsMessages.length,
       label: t('home.dmsMessages'),
+      onPress: () => navigation.navigate('DMSMessageList'),
     },
   ];
 
@@ -461,6 +465,7 @@ export default function HomeScreen() {
                   style={[
                     styles.alertCard,
                     {
+                      width: screenWidth * 0.75,
                       backgroundColor: `${severityColor(item.severity)}15`,
                       borderColor: severityColor(item.severity),
                     },
@@ -502,6 +507,7 @@ export default function HomeScreen() {
               style={[
                 styles.quickActionBtn,
                 {
+                  width: (screenWidth - 44) / 2,
                   backgroundColor: colors.card,
                   borderColor: colors.border,
                 },
@@ -532,7 +538,7 @@ export default function HomeScreen() {
           inverted={isRTL}
           scrollEnabled={true}
           renderItem={({ item }) => (
-            <Card style={styles.statCard}>
+            <Card style={styles.statCard} onPress={item.onPress} accessibilityLabel={`${item.label}: ${item.count}`}>
               <MaterialCommunityIcons name={item.icon} size={28} color={colors.primary} />
               <Text style={[styles.statCount, { color: colors.text }]}>{item.count}</Text>
               <Text
@@ -652,7 +658,7 @@ export default function HomeScreen() {
 
 // ── Styles ───────────────────────────────────────────────────────
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+// Dimensions moved to useWindowDimensions inside the component
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -812,7 +818,6 @@ const styles = StyleSheet.create({
   alertCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: SCREEN_WIDTH * 0.75,
     borderWidth: 1,
     borderRadius: 12,
     padding: 12,
@@ -839,7 +844,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   quickActionBtn: {
-    width: (SCREEN_WIDTH - 44) / 2,
     alignItems: 'center',
     paddingVertical: 18,
     borderRadius: 14,
@@ -874,7 +878,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   statCard: {
-    width: 140,
+    minWidth: 120,
+    maxWidth: 160,
     alignItems: 'center',
     paddingVertical: 16,
   },

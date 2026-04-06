@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import MapView from 'react-native-maps';
+import MapView from '../../../utils/MapView';
 import { useThemeColors } from '../../../theme';
 import { Card, Button } from '../../../components/common';
 import { AccessibleText } from '../../../components/common';

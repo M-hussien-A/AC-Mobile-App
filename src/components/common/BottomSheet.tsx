@@ -9,7 +9,7 @@ import {
   StyleSheet,
   Animated,
   PanResponder,
-  Dimensions,
+  useWindowDimensions,
   Modal,
   Platform,
   KeyboardAvoidingView,
@@ -24,8 +24,6 @@ export interface BottomSheetProps {
   snapPoints?: number[];
 }
 
-const SCREEN_HEIGHT = Dimensions.get('window').height;
-const DEFAULT_SNAP_POINTS = [SCREEN_HEIGHT * 0.4, SCREEN_HEIGHT * 0.7];
 const DISMISS_THRESHOLD = 100;
 
 // ── Component ────────────────────────────────────────────────────
@@ -33,15 +31,19 @@ export function BottomSheet({
   visible,
   onClose,
   children,
-  snapPoints = DEFAULT_SNAP_POINTS,
+  snapPoints,
 }: BottomSheetProps) {
+  const { height: SCREEN_HEIGHT } = useWindowDimensions();
+  const defaultSnaps = [SCREEN_HEIGHT * 0.4, SCREEN_HEIGHT * 0.7];
+  const resolvedSnapPoints = snapPoints ?? defaultSnaps;
+
   const theme = useAppTheme();
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
   const currentSnap = useRef(0);
   const panOffset = useRef(0);
 
-  const sortedSnaps = [...snapPoints].sort((a, b) => a - b);
+  const sortedSnaps = [...resolvedSnapPoints].sort((a, b) => a - b);
   const initialHeight = sortedSnaps[0];
 
   // Animate open/close
@@ -178,6 +180,7 @@ export function BottomSheet({
           style={[
             styles.sheet,
             {
+              height: SCREEN_HEIGHT,
               backgroundColor: theme.palette.surface,
               transform: [{ translateY }],
             },
@@ -213,7 +216,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    height: SCREEN_HEIGHT,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: 'hidden',

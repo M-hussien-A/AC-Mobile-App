@@ -11,6 +11,7 @@
           "delayMin": 3,
           "mode": "drive",
           "co2Grams": 1200,
+          "fareEGP": 0,
           "polyline": [[30.0194, 31.76], [30.02, 31.758], [30.022, 31.755], [30.024, 31.752], [30.026, 31.75], [30.028, 31.748], [30.03, 31.746]],
           "steps": [
             { "instruction": "Head north on Government District Road", "instructionAr": "اتجه شمالاً على طريق الحي الحكومي", "distanceKm": 1.2, "durationMin": 3, "mode": "drive" },
@@ -27,6 +28,7 @@
           "delayMin": 1,
           "mode": "drive",
           "co2Grams": 1450,
+          "fareEGP": 0,
           "polyline": [[30.0194, 31.76], [30.018, 31.762], [30.016, 31.765], [30.015, 31.768], [30.017, 31.77], [30.02, 31.772], [30.025, 31.77]],
           "steps": [
             { "instruction": "Head south on Government District Road", "instructionAr": "اتجه جنوباً على طريق الحي الحكومي", "distanceKm": 1.5, "durationMin": 4, "mode": "drive" },
@@ -43,11 +45,95 @@
           "delayMin": 0,
           "mode": "multimodal",
           "co2Grams": 150,
+          "fareEGP": 15,
           "polyline": [[30.0194, 31.76], [30.02, 31.759], [30.022, 31.757], [30.025, 31.755], [30.028, 31.753]],
           "steps": [
             { "instruction": "Walk to Government District LRT Station", "instructionAr": "امشِ إلى محطة قطار الحي الحكومي", "distanceKm": 0.4, "durationMin": 5, "mode": "walk" },
             { "instruction": "Take LRT Line 1 to Central Station", "instructionAr": "استقل القطار الخفيف خط 1 إلى المحطة المركزية", "distanceKm": 7.2, "durationMin": 20, "mode": "lrt", "transitInfo": { "routeNumber": "LRT-1", "boardStation": "Government District", "alightStation": "Central Station" } },
             { "instruction": "Walk to destination", "instructionAr": "امشِ إلى الوجهة", "distanceKm": 0.6, "durationMin": 8, "mode": "walk" }
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": "plan-002",
+      "routes": [
+        {
+          "id": "route-004",
+          "summary": "Bus Route via Central Boulevard",
+          "distanceKm": 6.8,
+          "durationMin": 28,
+          "delayMin": 2,
+          "mode": "transit",
+          "co2Grams": 200,
+          "fareEGP": 10,
+          "polyline": [[30.015, 31.755], [30.017, 31.758], [30.019, 31.76], [30.021, 31.763], [30.023, 31.765]],
+          "steps": [
+            { "instruction": "Walk to R5 Bus Stop", "instructionAr": "امشِ إلى محطة حافلة R5", "distanceKm": 0.3, "durationMin": 4, "mode": "walk" },
+            { "instruction": "Take Bus 12 to Parliament Square", "instructionAr": "استقل الحافلة 12 إلى ميدان البرلمان", "distanceKm": 5.5, "durationMin": 18, "mode": "bus", "transitInfo": { "routeNumber": "BUS-12", "boardStation": "R5 District", "alightStation": "Parliament Square" } },
+            { "instruction": "Walk to Government Quarter", "instructionAr": "امشِ إلى الحي الحكومي", "distanceKm": 1.0, "durationMin": 6, "mode": "walk" }
+          ],
+          "warnings": ["Minor delay on Bus 12 route"]
+        },
+        {
+          "id": "route-005",
+          "summary": "Cycle via Green Corridor",
+          "distanceKm": 7.2,
+          "durationMin": 25,
+          "delayMin": 0,
+          "mode": "cycle",
+          "co2Grams": 0,
+          "fareEGP": 0,
+          "polyline": [[30.015, 31.755], [30.016, 31.757], [30.018, 31.759], [30.02, 31.761], [30.022, 31.763], [30.025, 31.765]],
+          "steps": [
+            { "instruction": "Head north on Green Corridor cycling path", "instructionAr": "اتجه شمالاً على مسار الدراجات في الممر الأخضر", "distanceKm": 3.5, "durationMin": 12, "mode": "cycle" },
+            { "instruction": "Turn right onto Central Boulevard bike lane", "instructionAr": "انعطف يميناً إلى حارة الدراجات في البوليفارد المركزي", "distanceKm": 2.5, "durationMin": 8, "mode": "cycle" },
+            { "instruction": "Continue to Government Quarter", "instructionAr": "استمر إلى الحي الحكومي", "distanceKm": 1.2, "durationMin": 5, "mode": "cycle" }
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": "plan-003",
+      "routes": [
+        {
+          "id": "route-006",
+          "summary": "Walk via Opera Square",
+          "distanceKm": 2.1,
+          "durationMin": 25,
+          "delayMin": 0,
+          "mode": "walk",
+          "co2Grams": 0,
+          "fareEGP": 0,
+          "polyline": [[30.019, 31.762], [30.0192, 31.7635], [30.0194, 31.765], [30.02, 31.766]],
+          "steps": [
+            { "instruction": "Head east on Parliament Street", "instructionAr": "اتجه شرقاً على شارع البرلمان", "distanceKm": 0.8, "durationMin": 10, "mode": "walk" },
+            { "instruction": "Cross Opera Square", "instructionAr": "اعبر ميدان الأوبرا", "distanceKm": 0.5, "durationMin": 6, "mode": "walk" },
+            { "instruction": "Continue to destination", "instructionAr": "استمر إلى الوجهة", "distanceKm": 0.8, "durationMin": 9, "mode": "walk" }
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": "plan-004",
+      "routes": [
+        {
+          "id": "route-007",
+          "summary": "Monorail + Walk",
+          "distanceKm": 12.5,
+          "durationMin": 32,
+          "delayMin": 0,
+          "mode": "multimodal",
+          "co2Grams": 120,
+          "fareEGP": 20,
+          "polyline": [[30.028, 31.748], [30.025, 31.752], [30.022, 31.756], [30.019, 31.76]],
+          "steps": [
+            { "instruction": "Walk to Knowledge Hub Monorail Station", "instructionAr": "امشِ إلى محطة مونوريل مركز المعرفة", "distanceKm": 0.5, "durationMin": 6, "mode": "walk" },
+            { "instruction": "Take Monorail Line to Capital Gardens", "instructionAr": "استقل المونوريل إلى حدائق العاصمة", "distanceKm": 10.5, "durationMin": 18, "mode": "monorail", "transitInfo": { "routeNumber": "MNR-1", "boardStation": "Knowledge Hub", "alightStation": "Capital Gardens" } },
+            { "instruction": "Walk to Opera District", "instructionAr": "امشِ إلى حي الأوبرا", "distanceKm": 1.5, "durationMin": 8, "mode": "walk" }
           ],
           "warnings": []
         }
@@ -72,6 +158,42 @@
       "to": { "name": "NAC Commercial Center", "lat": 30.018, "lng": 31.775 },
       "lastUsed": "2026-04-02T17:30:00Z",
       "estimatedTimeMin": 20
+    },
+    {
+      "id": "saved-003",
+      "name": "Office to LRT Station",
+      "nameAr": "من المكتب إلى محطة القطار",
+      "from": { "name": "Government Quarter", "lat": 30.025, "lng": 31.765 },
+      "to": { "name": "Central LRT Station", "lat": 30.0194, "lng": 31.76 },
+      "lastUsed": "2026-04-03T17:00:00Z",
+      "estimatedTimeMin": 10
+    },
+    {
+      "id": "saved-004",
+      "name": "Home to Mosque",
+      "nameAr": "من المنزل إلى المسجد",
+      "from": { "name": "Home - R5 District", "lat": 30.015, "lng": 31.755 },
+      "to": { "name": "Capital Mosque", "lat": 30.0205, "lng": 31.752 },
+      "lastUsed": "2026-04-04T11:45:00Z",
+      "estimatedTimeMin": 12
+    },
+    {
+      "id": "saved-005",
+      "name": "Home to Sports Complex",
+      "nameAr": "من المنزل إلى المجمع الرياضي",
+      "from": { "name": "Home - R5 District", "lat": 30.015, "lng": 31.755 },
+      "to": { "name": "NAC Sports Complex", "lat": 30.026, "lng": 31.768 },
+      "lastUsed": "2026-04-01T06:30:00Z",
+      "estimatedTimeMin": 18
+    },
+    {
+      "id": "saved-006",
+      "name": "Office to Cathedral",
+      "nameAr": "من المكتب إلى الكاتدرائية",
+      "from": { "name": "Government Quarter", "lat": 30.025, "lng": 31.765 },
+      "to": { "name": "Cathedral of Nativity", "lat": 30.0175, "lng": 31.761 },
+      "lastUsed": "2026-03-28T09:00:00Z",
+      "estimatedTimeMin": 14
     }
   ]
 }

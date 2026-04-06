@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+import { View, ScrollView, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -16,6 +16,7 @@ export default function ParkingSessionScreen() {
   const colors = useThemeColors();
   const [session, setSession] = useState<any>(null);
   const [elapsed, setElapsed] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadSession();
@@ -31,10 +32,16 @@ export default function ParkingSessionScreen() {
   }, [session]);
 
   async function loadSession() {
-    const data = await getActiveSession();
-    setSession(data);
-    if (data?.startTime) {
-      setElapsed(Math.floor((Date.now() - new Date(data.startTime).getTime()) / 60000));
+    try {
+      const data = await getActiveSession();
+      setSession(data);
+      if (data?.startTime) {
+        setElapsed(Math.floor((Date.now() - new Date(data.startTime).getTime()) / 60000));
+      }
+    } catch (e) {
+      // No active session
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -43,20 +50,25 @@ export default function ParkingSessionScreen() {
       { text: t('common.cancel'), style: 'cancel' },
       {
         text: t('parking.session.endSession'), style: 'destructive', onPress: async () => {
-          const result = await endSession(session.id);
-          Alert.alert(t('parking.session.ended'), `${t('common.total')}: ${formatCurrency(result.finalAmount)}`);
-          navigation.goBack();
+          try {
+            const result = await endSession(session.id);
+            Alert.alert(t('parking.session.ended'), `${t('common.total')}: ${formatCurrency(result.finalAmount)}`);
+            navigation.goBack();
+          } catch (e) {
+            Alert.alert(t('common.error'), (e as Error).message || t('common.genericError'));
+          }
         }
       },
     ]);
   };
 
-  if (!session) return <View style={[styles.center, { backgroundColor: colors.background }]}><AccessibleText style={{ color: colors.textSecondary }}>{t('parking.session.noActive')}</AccessibleText></View>;
+  if (loading) return <View style={[styles.center, { backgroundColor: colors.background }]}><ActivityIndicator size="large" color={colors.primary} /></View>;
+  if (!session) return <View style={[styles.center, { backgroundColor: colors.background }]}><MaterialCommunityIcons name="car-off" size={48} color={colors.textSecondary} /><AccessibleText style={{ color: colors.textSecondary, marginTop: 12, fontSize: 16 }}>{t('parking.session.noActive')}</AccessibleText></View>;
 
   const costSoFar = Math.ceil(elapsed / 60) * (session.amountEGP || 15);
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.scrollContent}>
       <Card style={styles.card}>
         <View style={styles.header}>
           <MaterialCommunityIcons name="car" size={28} color={colors.primary} />
@@ -98,6 +110,7 @@ export default function ParkingSessionScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  scrollContent: { paddingTop: 12, paddingBottom: 24 },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   card: { marginHorizontal: 16, marginBottom: 12 },
   header: { flexDirection: 'row', alignItems: 'center', gap: 12 },

@@ -9,9 +9,10 @@ import {
   StyleSheet,
   ActivityIndicator,
   Text,
-  Dimensions,
+  Pressable,
+  useWindowDimensions,
 } from 'react-native';
-import MapView from 'react-native-maps';
+import MapView from '../../../utils/MapView';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
@@ -27,9 +28,9 @@ import type { ParkingFacility } from '../../../types';
 type Nav = NativeStackNavigationProp<ServicesStackParamList>;
 
 const ACUD_CENTER = { latitude: 30.02, longitude: 31.76, latitudeDelta: 0.03, longitudeDelta: 0.03 };
-const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function ParkingMapScreen() {
+  const { height: screenHeight } = useWindowDimensions();
   const navigation = useNavigation<Nav>();
   const { t } = useTranslation();
   const colors = useThemeColors();
@@ -111,6 +112,13 @@ export default function ParkingMapScreen() {
     return (
       <View style={[styles.center, { backgroundColor: colors.background }]}>
         <Text style={[styles.errorText, { color: colors.error }]}>{error}</Text>
+        <Pressable
+          style={[styles.retryButton, { backgroundColor: colors.primary }]}
+          onPress={loadData}
+          accessibilityRole="button"
+        >
+          <Text style={styles.retryButtonText}>{t('common.retry')}</Text>
+        </Pressable>
       </View>
     );
   }
@@ -118,7 +126,7 @@ export default function ParkingMapScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Map */}
-      <MapView style={styles.map} initialRegion={ACUD_CENTER} showsUserLocation>
+      <MapView style={[styles.map, { height: screenHeight * 0.4 }]} initialRegion={ACUD_CENTER} showsUserLocation>
         {filteredFacilities.map((facility) => (
           <ParkingMarker
             key={facility.id}
@@ -198,7 +206,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   map: {
-    height: SCREEN_HEIGHT * 0.4,
+    // height set dynamically via useWindowDimensions
+  },
+  retryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginTop: 12,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
   },
   bottomSheet: {
     flex: 1,

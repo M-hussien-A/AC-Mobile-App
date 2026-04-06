@@ -18,6 +18,7 @@ import RideHailingScreen from '../screens/services/sharedMobility/RideHailingScr
 import EVChargingMapScreen from '../screens/services/sharedMobility/EVChargingMapScreen';
 import LoadingZoneScreen from '../screens/services/LoadingZoneScreen';
 import PointsOfInterestScreen from '../screens/services/PointsOfInterestScreen';
+import LEZInfoScreen from '../screens/services/LEZInfoScreen';
 
 const Stack = createNativeStackNavigator<ServicesStackParamList>();
 
@@ -52,6 +53,7 @@ export default function ServicesStack() {
       <Stack.Screen name="EVChargingMap" component={EVChargingMapScreen} options={{ title: t('mobility.evCharging') }} />
       <Stack.Screen name="LoadingZone" component={LoadingZoneScreen} options={{ title: t('services.loadingZones') }} />
       <Stack.Screen name="PointsOfInterest" component={PointsOfInterestScreen} options={{ title: t('services.poi') }} />
+      <Stack.Screen name="LEZInfo" component={LEZInfoScreen} options={{ title: t('services.lowEmissions') }} />
     </Stack.Navigator>
   );
 }

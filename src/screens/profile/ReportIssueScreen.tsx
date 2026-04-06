@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, TextInput, Image, Modal, Pressable } from 'react-native';
+import { View, ScrollView, StyleSheet, TextInput, Image, Modal, Pressable, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker } from '../../utils/MapView';
 import { useThemeColors } from '../../theme';
 import { Card, Button } from '../../components/common';
 import { AccessibleText } from '../../components/common';
@@ -14,7 +14,7 @@ const CATEGORIES = [
   { key: 'roadCondition', icon: 'road-variant' },
   { key: 'signalMalfunction', icon: 'traffic-light' },
   { key: 'pothole', icon: 'circle-off-outline' },
-  { key: 'hazard', icon: 'alert-triangle' },
+  { key: 'hazard', icon: 'alert-outline' },
   { key: 'other', icon: 'dots-horizontal-circle' },
 ];
 
@@ -49,6 +49,11 @@ export default function ReportIssueScreen() {
       const result = await submitReport({ category, description, lat: location.latitude, lng: location.longitude, photoUri: photo || undefined });
       setRefNumber(result.referenceNumber);
       setShowSuccess(true);
+    } catch (err: any) {
+      Alert.alert(
+        t('common.error'),
+        err?.message ?? t('report.submitError', 'Failed to submit report. Please try again.'),
+      );
     } finally {
       setLoading(false);
     }
@@ -89,9 +94,9 @@ export default function ReportIssueScreen() {
           <MapView
             style={styles.map}
             initialRegion={{ ...location, latitudeDelta: 0.005, longitudeDelta: 0.005 }}
-            onPress={(e) => setLocation(e.nativeEvent.coordinate)}
+            onPress={(e: any) => setLocation(e.nativeEvent.coordinate)}
           >
-            <Marker coordinate={location} draggable onDragEnd={(e) => setLocation(e.nativeEvent.coordinate)} />
+            <Marker coordinate={location} draggable onDragEnd={(e: any) => setLocation(e.nativeEvent.coordinate)} />
           </MapView>
           <AccessibleText style={[styles.coords, { color: colors.textSecondary }]}>
             {location.latitude.toFixed(5)}° N, {location.longitude.toFixed(5)}° E
@@ -113,11 +118,11 @@ export default function ReportIssueScreen() {
         </Card>
       </ScrollView>
 
-      <View style={styles.footer}>
+      <View style={[styles.footer, { borderTopColor: colors.divider }]}>
         <Button title={t('report.submit')} onPress={handleSubmit} variant="primary" loading={loading} fullWidth disabled={!category || !description} icon="send" />
       </View>
 
-      <Modal visible={showSuccess} animationType="slide" transparent>
+      <Modal visible={showSuccess} animationType="slide" transparent onRequestClose={() => { setShowSuccess(false); navigation.goBack(); }}>
         <View style={styles.modalOverlay}>
           <View style={[styles.successCard, { backgroundColor: colors.surface }]}>
             <MaterialCommunityIcons name="check-circle" size={60} color="#22C55E" />

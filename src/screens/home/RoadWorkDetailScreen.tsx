@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, ScrollView, StyleSheet, I18nManager } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import MapView, { Polygon, Marker } from 'react-native-maps';
+import MapView, { Polygon, Marker } from '../../utils/MapView';
 import { useThemeColors } from '../../theme';
 import { Card, Button } from '../../components/common';
 import { AccessibleText } from '../../components/common';
+import type { HomeStackParamList } from '../../navigation/types';
+
+type Nav = NativeStackNavigationProp<HomeStackParamList, 'RoadWorkDetail'>;
+type RouteParams = RouteProp<HomeStackParamList, 'RoadWorkDetail'>;
 
 export default function RoadWorkDetailScreen() {
-  const route = useRoute<any>();
-  const navigation = useNavigation<any>();
-  const { t } = useTranslation();
+  const route = useRoute<RouteParams>();
+  const navigation = useNavigation<Nav>();
+  const { t, i18n } = useTranslation();
+  const isRTL = I18nManager.isRTL;
+  const isAr = i18n.language === 'ar';
   const colors = useThemeColors();
 
   const workZone = {
@@ -37,10 +45,12 @@ export default function RoadWorkDetailScreen() {
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.header, { backgroundColor: '#F59E0B20' }]}>
-        <View style={styles.headerRow}>
+        <View style={[styles.headerRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <MaterialCommunityIcons name="hard-hat" size={32} color="#F59E0B" />
-          <View style={styles.headerText}>
-            <AccessibleText style={[styles.title, { color: colors.text }]}>{workZone.name}</AccessibleText>
+          <View style={[styles.headerText, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+            <AccessibleText style={[styles.title, { color: colors.text, textAlign: isRTL ? 'right' : 'left' }]}>
+              {isAr ? workZone.nameAr : workZone.name}
+            </AccessibleText>
             <View style={[styles.typeBadge, { backgroundColor: workZone.type === 'active' ? '#F59E0B' : colors.primary }]}>
               <AccessibleText style={styles.typeText}>{t(`roadWork.${workZone.type}`)}</AccessibleText>
             </View>
@@ -75,32 +85,36 @@ export default function RoadWorkDetailScreen() {
 
       <Card style={styles.card}>
         <AccessibleText style={[styles.sectionTitle, { color: colors.text }]}>{t('roadWork.trafficImpact')}</AccessibleText>
-        <View style={[styles.impactBox, { backgroundColor: '#FEF3C720' }]}>
+        <View style={[styles.impactBox, { backgroundColor: '#FEF3C720', flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <MaterialCommunityIcons name="clock-alert" size={20} color="#F59E0B" />
-          <AccessibleText style={[styles.impactText, { color: colors.text }]}>
+          <AccessibleText style={[styles.impactText, { color: colors.text, textAlign: isRTL ? 'right' : 'left' }]}>
             {t('roadWork.expectedDelay')}: {workZone.expectedDelay}
           </AccessibleText>
         </View>
-        <View style={[styles.impactBox, { backgroundColor: '#22C55E20', marginTop: 8 }]}>
+        <View style={[styles.impactBox, { backgroundColor: '#22C55E20', marginTop: 8, flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
           <MaterialCommunityIcons name="directions" size={20} color="#22C55E" />
-          <AccessibleText style={[styles.impactText, { color: colors.text }]}>
+          <AccessibleText style={[styles.impactText, { color: colors.text, textAlign: isRTL ? 'right' : 'left' }]}>
             {workZone.alternativeRoute}
           </AccessibleText>
         </View>
       </Card>
 
       <View style={styles.buttonContainer}>
-        <Button title={t('roadWork.navigateAround')} onPress={() => navigation.navigate('JourneyTab')} variant="primary" icon="directions" fullWidth />
+        <Button title={t('roadWork.navigateAround')} onPress={() => navigation.getParent()?.navigate('JourneyTab')} variant="primary" icon="directions" fullWidth />
       </View>
+
+      {/* Bottom spacer */}
+      <View style={styles.bottomSpacer} />
     </ScrollView>
   );
 }
 
 function DetailRow({ icon, label, value, colors }: { icon: string; label: string; value: string; colors: any }) {
+  const isRTL = I18nManager.isRTL;
   return (
-    <View style={styles.detailRow}>
+    <View style={[styles.detailRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
       <MaterialCommunityIcons name={icon as any} size={18} color={colors.textSecondary} />
-      <AccessibleText style={[styles.detailLabel, { color: colors.textSecondary }]}>{label}</AccessibleText>
+      <AccessibleText style={[styles.detailLabel, { color: colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>{label}</AccessibleText>
       <AccessibleText style={[styles.detailValue, { color: colors.text }]}>{value}</AccessibleText>
     </View>
   );
@@ -120,7 +134,8 @@ const styles = StyleSheet.create({
   detailRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 10, borderBottomWidth: 0.5, borderBottomColor: '#E5E7EB' },
   detailLabel: { fontSize: 14, flex: 1 },
   detailValue: { fontSize: 14, fontWeight: '600' },
-  impactBox: { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 12, borderRadius: 8 },
+  impactBox: { alignItems: 'center', gap: 10, padding: 12, borderRadius: 8 },
   impactText: { fontSize: 14, flex: 1 },
   buttonContainer: { padding: 16 },
+  bottomSpacer: { height: 24 },
 });

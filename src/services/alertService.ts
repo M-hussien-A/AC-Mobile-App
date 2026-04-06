@@ -3,9 +3,30 @@ import { Alert } from '../types';
 
 let alertData: Alert[] | null = null;
 
+function normalizeAlert(raw: any): Alert {
+  return {
+    id: raw.id,
+    category: raw.category,
+    severity: raw.severity === 'warning' ? 'major' : raw.severity,
+    title: raw.title,
+    titleAr: raw.titleAr,
+    message: raw.message ?? raw.description ?? '',
+    messageAr: raw.messageAr ?? raw.descriptionAr ?? '',
+    location: raw.location ?? (raw.lat != null ? { latitude: raw.lat, longitude: raw.lng } : undefined),
+    radius: raw.radius,
+    startTime: raw.startTime,
+    endTime: raw.endTime,
+    isRead: raw.isRead ?? raw.read ?? false,
+    actionUrl: raw.actionUrl,
+    createdAt: raw.createdAt ?? raw.lastUpdated ?? raw.startTime,
+  };
+}
+
 async function getData() {
   if (!alertData) {
-    alertData = require('../mocks/alerts.json');
+    const raw = require('../mocks/alerts.json');
+    const arr = Array.isArray(raw) ? raw : raw.alerts ?? [];
+    alertData = arr.map(normalizeAlert);
   }
   return alertData!;
 }
@@ -21,7 +42,7 @@ export async function getAlerts(
   if (severity && severity !== 'all') {
     data = data.filter((a) => a.severity === severity);
   }
-  return mockFetch(data.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
+  return mockFetch(data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
 }
 
 export async function getAlertById(id: string): Promise<Alert | undefined> {

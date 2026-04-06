@@ -22,7 +22,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import MapView, { Marker, Polyline, Region } from 'react-native-maps';
+import MapView, { Marker, Polyline, Region } from '../../utils/MapView';
 import { useThemeColors } from '../../theme';
 import { AlertsStackParamList } from '../../navigation/types';
 import { getEvacuationPlan } from '../../services/reportService';
@@ -70,7 +70,7 @@ export default function EvacuationRouteScreen() {
   const { t, i18n } = useTranslation();
   const colors = useThemeColors();
   const isAr = i18n.language === 'ar';
-  const mapRef = useRef<MapView>(null);
+  const mapRef = useRef<any>(null);
 
   // State
   const [loading, setLoading] = useState(true);

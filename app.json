@@ -35,12 +35,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-localization",
-      "expo-notifications",
-      "expo-location",
-      "expo-image-picker"
-    ],
+    "plugins": [],
     "scheme": "acud-traveler",
     "extra": {
       "mapCenter": {

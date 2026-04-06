@@ -7,7 +7,7 @@
 
 import React, { useRef, useCallback } from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Region, MapMarkerProps } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Region, MapMarkerProps } from '../../utils/MapView';
 import { useAppTheme } from '../../theme';
 
 // ── Constants ─────────────────────────────────────────────────

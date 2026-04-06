@@ -13,7 +13,7 @@ async function getData() {
 export async function getViolations(vehiclePlate?: string): Promise<Violation[]> {
   const data = await getData();
   if (vehiclePlate) {
-    return mockFetch(data.filter((v) => v.vehiclePlate === vehiclePlate));
+    return mockFetch(data.filter((v) => v.vehiclePlateNumber === vehiclePlate));
   }
   return mockFetch(data);
 }

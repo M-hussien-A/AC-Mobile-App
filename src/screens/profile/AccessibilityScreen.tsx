@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, Switch } from 'react-native';
+import { View, ScrollView, StyleSheet, Switch, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useThemeColors } from '../../theme';
 import { Card } from '../../components/common';
 import { AccessibleText } from '../../components/common';
-import Slider from '@react-native-community/slider';
+
+const FONT_SCALE_OPTIONS = [0.8, 1, 1.2, 1.5];
 
 export default function AccessibilityScreen() {
   const { t } = useTranslation();
@@ -14,18 +15,20 @@ export default function AccessibilityScreen() {
   const [highContrast, setHighContrast] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
 
+  const sliderFillPercent = ((FONT_SCALE_OPTIONS.indexOf(fontSize) + 1) / FONT_SCALE_OPTIONS.length) * 100;
+
   return (
-    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.scrollContent}>
       <Card style={styles.card}>
         <AccessibleText style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.fontSize')}</AccessibleText>
         <View style={styles.sliderRow}>
           <AccessibleText style={[styles.sliderLabel, { color: colors.textSecondary, fontSize: 12 }]}>A</AccessibleText>
           <View style={styles.slider}>
             <View style={styles.sliderTrack}>
-              <View style={[styles.sliderFill, { width: `${fontSize * 50}%`, backgroundColor: colors.primary }]} />
+              <View style={[styles.sliderFill, { width: `${sliderFillPercent}%`, backgroundColor: colors.primary }]} />
             </View>
             <View style={styles.sliderButtons}>
-              {[0.8, 1, 1.2, 1.5].map((v) => (
+              {FONT_SCALE_OPTIONS.map((v) => (
                 <Pressable key={v} onPress={() => setFontSize(v)} style={[styles.sliderDot, fontSize === v && { backgroundColor: colors.primary }]}>
                   <View />
                 </Pressable>
@@ -63,7 +66,7 @@ export default function AccessibilityScreen() {
 
       <Card style={styles.card}>
         <View style={styles.infoRow}>
-          <MaterialCommunityIcons name="text-to-speech" size={24} color={colors.primary} />
+          <MaterialCommunityIcons name="account-voice" size={24} color={colors.primary} />
           <View style={styles.toggleContent}>
             <AccessibleText style={[styles.toggleLabel, { color: colors.text }]}>{t('settings.screenReader')}</AccessibleText>
             <AccessibleText style={[styles.toggleDesc, { color: colors.textSecondary }]}>{t('settings.screenReaderDesc')}</AccessibleText>
@@ -74,10 +77,9 @@ export default function AccessibilityScreen() {
   );
 }
 
-import { Pressable } from 'react-native';
-
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  scrollContent: { paddingBottom: 32 },
   card: { marginHorizontal: 16, marginTop: 12 },
   sectionTitle: { fontSize: 16, fontWeight: '700', marginBottom: 16 },
   sliderRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 16 },

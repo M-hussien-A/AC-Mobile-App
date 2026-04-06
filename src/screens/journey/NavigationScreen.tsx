@@ -19,7 +19,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import MapView, { Polyline, Marker } from 'react-native-maps';
+import MapView, { Polyline, Marker } from '../../utils/MapView';
 import { useThemeColors } from '../../theme';
 import { JourneyStackParamList } from '../../navigation/types';
 import { useJourneyStore } from '../../stores/journeyStore';
@@ -32,7 +32,7 @@ import { RouteStepManeuver } from '../../types';
 type Nav = NativeStackNavigationProp<JourneyStackParamList, 'Navigation'>;
 type ScreenRoute = RouteProp<JourneyStackParamList, 'Navigation'>;
 
-// ── Mock route polyline points ──���───────────────────────────────
+// ── Mock route polyline points ──────────────────────────────────
 const MOCK_ROUTE_POINTS = [
   { latitude: 30.022, longitude: 31.758 },
   { latitude: 30.0215, longitude: 31.7585 },
@@ -50,7 +50,7 @@ const MOCK_ROUTE_POINTS = [
   { latitude: 30.025, longitude: 31.765 },
 ];
 
-// ── Mock navigation instructions ───────────��────────────────────
+// ── Mock navigation instructions ────────────────────────────────
 const MOCK_STEPS = [
   { instruction: 'Head east on Government Boulevard', distance: '500 m', maneuver: 'depart' as RouteStepManeuver, distanceM: 500 },
   { instruction: 'Turn right onto Central Avenue', distance: '300 m', maneuver: 'turn_right' as RouteStepManeuver, distanceM: 300 },
@@ -102,11 +102,18 @@ export default function NavigationScreen() {
   const [distanceRemaining, setDistanceRemaining] = useState(3.2);
   const [stepIndex, setStepIndex] = useState(0);
 
-  const mapRef = useRef<MapView>(null);
+  const mapRef = useRef<any>(null);
   const alertOpacity = useRef(new Animated.Value(0)).current;
 
   const currentPosition = MOCK_ROUTE_POINTS[positionIndex] || MOCK_ROUTE_POINTS[0];
   const currentMockStep = MOCK_STEPS[stepIndex] || MOCK_STEPS[0];
+
+  // ── Guard: if no selected route, go back ──────────────────────
+  useEffect(() => {
+    if (!selectedRoute) {
+      navigation.goBack();
+    }
+  }, [selectedRoute, navigation]);
 
   // ── Mock GPS movement ─────────────────────────────────────────
   useEffect(() => {
@@ -131,7 +138,7 @@ export default function NavigationScreen() {
     return () => clearInterval(interval);
   }, []);
 
-  // ── Step advancement ───────���──────────────────────────────────
+  // ── Step advancement ──────────────────────────────────────────
   useEffect(() => {
     // Advance step roughly based on position
     const stepThresholds = [0, 2, 4, 6, 8, 10, 12];
@@ -145,7 +152,7 @@ export default function NavigationScreen() {
     }
   }, [positionIndex, stepIndex]);
 
-  // ── Center map on position ──────────────��─────────────────────
+  // ── Center map on position ─────────────────────────────────────
   useEffect(() => {
     if (mapRef.current && currentPosition) {
       mapRef.current.animateToRegion(
@@ -160,7 +167,7 @@ export default function NavigationScreen() {
     }
   }, [currentPosition]);
 
-  // ── Mock alerts ───────────────────────────────────────��───────
+  // ── Mock alerts ───────────────────────────────────────────────
   useEffect(() => {
     // Queue warning at position 3
     if (positionIndex === 3) {
@@ -191,7 +198,7 @@ export default function NavigationScreen() {
     }
   }, [positionIndex, t]);
 
-  // ── Reroute prompt after 10 seconds ───────────���───────────────
+  // ── Reroute prompt after 10 seconds ────────────────────────────
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowRerouteModal(true);
@@ -199,7 +206,7 @@ export default function NavigationScreen() {
     return () => clearTimeout(timer);
   }, []);
 
-  // ── Show alert animation ───────────���──────────────────────────
+  // ── Show alert animation ──────────────────────────────────────
   const showAlert = useCallback(
     (alert: NavAlert) => {
       setActiveAlerts([alert]);
@@ -220,13 +227,13 @@ export default function NavigationScreen() {
     [alertOpacity],
   );
 
-  // ── End navigation ──────────────���─────────────────────���───────
+  // ── End navigation ────────────────────────────────────────────
   const handleEndNavigation = useCallback(() => {
     stopNavigation();
     navigation.goBack();
   }, [stopNavigation, navigation]);
 
-  // ── Accept reroute ─────────────────────���─────────────────���────
+  // ── Accept reroute ────────────────────────────────────────────
   const handleAcceptReroute = useCallback(() => {
     setShowRerouteModal(false);
     setEtaMinutes((prev) => Math.max(0, prev - 5));

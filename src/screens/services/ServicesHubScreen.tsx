@@ -9,8 +9,9 @@ import {
   FlatList,
   StyleSheet,
   Platform,
-  Dimensions,
+  useWindowDimensions,
   ActivityIndicator,
+  Pressable,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -34,10 +35,11 @@ interface ServiceTile {
 
 const TILE_GAP = 12;
 const SCREEN_PADDING = 16;
-const TILE_WIDTH =
-  (Dimensions.get('window').width - SCREEN_PADDING * 2 - TILE_GAP) / 2;
 
 export default function ServicesHubScreen() {
+  const { width: windowWidth } = useWindowDimensions();
+  const screenWidth = Math.min(windowWidth, 480);
+  const TILE_WIDTH = (screenWidth - SCREEN_PADDING * 2 - TILE_GAP) / 2;
   const navigation = useNavigation<Nav>();
   const { t } = useTranslation();
   const colors = useThemeColors();
@@ -45,23 +47,23 @@ export default function ServicesHubScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const facilities = await parkingService.getParkingFacilities();
-        if (mounted) {
-          const total = facilities.reduce((sum, f) => sum + f.availableSpaces, 0);
-          setAvailableCount(total);
-        }
-      } catch (e) {
-        if (mounted) setError((e as Error).message);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    })();
-    return () => { mounted = false; };
+  const loadData = React.useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const facilities = await parkingService.getParkingFacilities();
+      const total = facilities.reduce((sum, f) => sum + f.availableSpaces, 0);
+      setAvailableCount(total);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const tiles: ServiceTile[] = [
     { key: 'parking', icon: 'car', labelKey: 'services.parking', route: 'ParkingMap', countValue: availableCount ?? undefined, color: '#1F4E79' },
@@ -112,6 +114,15 @@ export default function ServicesHubScreen() {
       <View style={[styles.center, { backgroundColor: colors.background }]}>
         <MaterialCommunityIcons name="alert-circle-outline" size={48} color={colors.error} />
         <Text style={[styles.errorText, { color: colors.error }]}>{error}</Text>
+        <Pressable
+          style={[styles.retryButton, { backgroundColor: colors.primary }]}
+          onPress={loadData}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.retry')}
+        >
+          <MaterialCommunityIcons name="refresh" size={18} color="#fff" />
+          <Text style={styles.retryText}>{t('common.retry')}</Text>
+        </Pressable>
       </View>
     );
   }
@@ -150,6 +161,20 @@ const styles = StyleSheet.create({
     marginTop: 8,
     textAlign: 'center',
     paddingHorizontal: 32,
+  },
+  retryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginTop: 12,
+  },
+  retryText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
   },
   list: {
     padding: SCREEN_PADDING,

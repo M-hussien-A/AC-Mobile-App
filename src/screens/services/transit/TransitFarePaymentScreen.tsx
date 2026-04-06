@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, Modal } from 'react-native';
+import { View, ScrollView, StyleSheet, Modal, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -33,11 +33,17 @@ export default function TransitFarePaymentScreen() {
   const fare = Math.abs(toStation - fromStation) * 5 + 5;
 
   const handlePurchase = async () => {
+    if (fromStation === toStation) {
+      Alert.alert(t('common.error'), t('transit.sameStationError') || 'Please select different stations');
+      return;
+    }
     setLoading(true);
     try {
       const result = await purchaseFare(STATIONS[fromStation].id, STATIONS[toStation].id);
       setTicket(result);
       setShowTicket(true);
+    } catch (e) {
+      Alert.alert(t('common.error'), (e as Error).message || t('payment.failed'));
     } finally {
       setLoading(false);
     }
